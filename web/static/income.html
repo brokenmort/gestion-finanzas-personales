@@ -8,14 +8,15 @@
     <link rel="stylesheet" href="css/income.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Sofia&family=Trocchi&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Sofia&family=Trocchi&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="top-bar">
         <img src="icons/backArrow.png" alt="Back" class="backArrow" onclick="history.back()">
         <a href="home.html" class="home-icon">
-        <i class="bi bi-house-fill"></i></a>
+            <i class="bi bi-house-fill"></i>
+        </a>
     </div>
     <div class="contenedor-padre">
         <div class="contenedor">
@@ -27,18 +28,14 @@
                 <h2 id="incomeUsername">Nombre</h2>
             </div>
 
-            <!-- Tabs -->
-            
-            
-
             <!-- Fixed income table -->
             <div id="fixView" class="tab-view">
               <div class="table-wrap">
-               
                 <table class="fixed-table">
-                   <div class="tabs">
-              <input type="button" value="Fixed Income" id="fixIncm">
-              <input type="button" value="Supplemental Income" id="suppIncm" onclick="document.querySelector('#suppView').style.display = 'block'; document.querySelector('#fixView').style.display = 'none';">
+                  <div class="tabs">
+                    <input type="button" value="Fixed Income" id="fixIncm">
+                    <input type="button" value="Supplemental Income" id="suppIncm" onclick="document.querySelector('#suppView').style.display = 'block'; document.querySelector('#fixView').style.display = 'none';">
+                  </div>
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -46,85 +43,54 @@
                       <th>Name</th>
                       <th>Reason</th>
                       <th>Quantity</th>
-                      <th>Date</th>
+                      <th>Period</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>user@mail.com</td>
-                      <td>Salary</td>
-                      <td>Main job</td>
-                      <td>3000</td>
-                      <td>2025-09-01</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>user@mail.com</td>
-                      <td>Bonus</td>
-                      <td>Quarterly bonus</td>
-                      <td>800</td>
-                      <td>2025-09-10</td>
-                    </tr>
+                    <!-- Aquí JS insertará los ingresos fijos -->
                   </tbody>
-                  </div>
                 </table>
-                
               </div>
             </div>
 
-            
-        
-            
             <!-- Supplemental income table -->
             <div id="suppView" class="tab-view" style="display: none;">
               <div class="table-wrap">
-                
                 <table class="supp-table">
                   <div class="tabs">
-                     <input type="button" value="Fixed Income" id="fixIncmSelect" onclick="document.querySelector('#fixView').style.display = 'block'; document.querySelector('#suppView').style.display = 'none';">
+                    <input type="button" value="Fixed Income" id="fixIncmSelect" onclick="document.querySelector('#fixView').style.display = 'block'; document.querySelector('#suppView').style.display = 'none';">
                     <input type="button" value="Supplemental Income" id="suppIncmSelect">
+                  </div>
                   <thead>
                     <tr>
                       <th>Income</th>
                       <th>Amount</th>
-                      <th>Periodicity</th>
+                      <th>Date</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Freelance Work</td>
-                      <td>$1500</td>
-                      <td>Biweekly</td>
-                    </tr>
-                    <tr>
-                      <td>Investment Returns</td>
-                      <td>$500</td>
-                      <td>Weekly</td>
-                    </tr>
+                    <!-- Aquí JS insertará los ingresos extra -->
                   </tbody>
-                  </div>
                 </table>
-                
               </div>
             </div>
 
             <div class="menu-list">
               <label for="fI">Income:</label></br>
               <div class="split-select">
-            <select id="fI" name="fI">
-                <option value="income1">Income1</option>
-                <option value="income2">Income2</option>
-            </select>
-            </div>
-            <label for="date">Date:</label></br>
-            <div class="split-select">
-            <select id="date" name="date">
-                <option value="date1">Date1</option>
-                <option value="date1">Date2</option>
-            </select>
-            </div>
-            <input type="submit" value="Search" id="search-btn">
+                <select id="fI" name="fI">
+                    <option value="income1">Income1</option>
+                    <option value="income2">Income2</option>
+                </select>
+              </div>
+              <label for="date">Date:</label></br>
+              <div class="split-select">
+                <select id="date" name="date">
+                    <option value="date1">Date1</option>
+                    <option value="date2">Date2</option>
+                </select>
+              </div>
+              <input type="submit" value="Search" id="search-btn">
             </div>
             <div class="button">
                 <input type="button" value="Add New Income" id="Add-btn" onclick="location.href='newIncome.html'">

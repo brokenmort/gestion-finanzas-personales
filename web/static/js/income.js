@@ -14,84 +14,101 @@ document.addEventListener('DOMContentLoaded', async () => {
     const API_BASE = window.API_BASE || window.location.origin;
 
     // Obtenemos referencias a los elementos del DOM
-    const nameEl = document.getElementById('incomeUsername');       // Nombre del usuario
-    const iconEl = document.getElementById('walletProfileIcon');    // Ícono por defecto (bi-person)
-    const imgEl  = document.getElementById('walletProfileImage');   // Imagen de perfil
+    const nameEl = document.getElementById('incomeUsername');       
+    const iconEl = document.getElementById('walletProfileIcon');    
+    const imgEl  = document.getElementById('walletProfileImage');   
 
-    // Función auxiliar que transforma la ruta de la imagen en una URL válida
     const resolveImageUrl = (raw) => {
-        if (!raw) return null;              // Si no hay valor, devolvemos null
-        const s = String(raw).trim();       // Convertimos a string y quitamos espacios
-        if (!s) return null;                // Si queda vacío, null
-        if (/^https?:\/\//i.test(s)) return s; // Si ya es una URL absoluta (http/https), la devolvemos
-        const path = s.startsWith('/') ? s : `/${s}`; // Si no, aseguramos que comience con "/"
-        return `${API_BASE}${path}`;        // Concatenamos con la base de la API
+        if (!raw) return null;              
+        const s = String(raw).trim();       
+        if (!s) return null;                
+        if (/^https?:\/\//i.test(s)) return s; 
+        const path = s.startsWith('/') ? s : `/${s}`;
+        return `${API_BASE}${path}`;        
     };
 
     try {
-        // Llamamos al endpoint de perfil del usuario
         const res = await fetch(`${API_BASE}/api/auth/me/`, {
             headers: {
-                'Content-Type': 'application/json',   // Cabecera para JSON
-                'Authorization': 'Bearer ' + token,   // Token de autenticación
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
             },
         });
 
-        // Si la respuesta no es correcta (401 o error), lanzamos excepción
         if (!res.ok) throw new Error('No autorizado');
-
-        // Parseamos el JSON con los datos del usuario
         const data = await res.json();
 
-        // Colocamos el nombre o email en el elemento correspondiente
         if (nameEl) {
             nameEl.textContent = data.first_name || data.email || 'Usuario';
         }
 
-        // Resolvemos la URL de la imagen de perfil
         const url = resolveImageUrl(data && data.profile_image);
 
-        // Si hay imagen y elementos válidos
         if (url && imgEl && iconEl) {
-            // Cuando la imagen carga correctamente, la mostramos y ocultamos el ícono
             imgEl.onload = () => { 
                 imgEl.style.display = 'block'; 
                 iconEl.style.display = 'none'; 
             };
-            // Si ocurre error al cargar, ocultamos la imagen y mostramos el ícono
             imgEl.onerror = () => { 
                 imgEl.style.display = 'none'; 
                 iconEl.style.display = 'block'; 
             };
-            // Asignamos la URL con un parámetro de tiempo para evitar usar caché
             imgEl.src = url + (url.includes('?') ? `&t=${Date.now()}` : `?t=${Date.now()}`);
         }
     } catch (e) {
-        // Si ocurre algún error, forzamos login
         window.location.href = 'index.html';
     }
 
-    // --- Comportamiento de Tabs ---
-    // Seleccionamos los botones de pestañas
-    const tabs = document.querySelectorAll('.tab-btn');
-
-    // Añadimos evento de click a cada pestaña
-    tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Quitamos la clase activa de todas las pestañas
-            tabs.forEach(b => b.classList.remove('active'));
-            // Marcamos la pestaña clicada como activa
-            btn.classList.add('active');
-            // Buscamos la vista correspondiente a la pestaña
-            const target = document.querySelector(btn.dataset.target);
-            // Ocultamos todas las vistas
-            document.querySelectorAll('.tab-view').forEach(v => v.style.display = 'none');
-            // Mostramos solo la vista seleccionada
-            if (target) target.style.display = 'block';
+    // --- Cargar ingresos dinámicamente ---
+    async function loadIngresos() {
+      try {
+        // Ingresos Fijos
+        const resFijos = await fetch(`${API_BASE}/api/IngresosFijos/`, {
+          headers: { 'Authorization': 'Bearer ' + token }
         });
-    });
+        if (resFijos.ok) {
+          const dataFijos = await resFijos.json();
+          const tbodyFijos = document.querySelector('.fixed-table tbody');
+          tbodyFijos.innerHTML = '';
 
-    // Por defecto activamos la primera pestaña si existe
-    const first = document.querySelector('.tab-btn');
-    if (first) first.click();
+          dataFijos.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${item.id}</td>
+              <td>${item.owner || ''}</td>
+              <td>${item.name}</td>
+              <td>${item.reason}</td>
+              <td>${item.quantity}</td>
+              <td>${item.period || ''}</td>
+            `;
+            tbodyFijos.appendChild(tr);
+          });
+        }
+
+        // Ingresos Extra
+        const resExtra = await fetch(`${API_BASE}/api/IngresosExtra/`, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (resExtra.ok) {
+          const dataExtra = await resExtra.json();
+          const tbodyExtra = document.querySelector('.supp-table tbody');
+          tbodyExtra.innerHTML = '';
+
+          dataExtra.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${item.name}</td>
+              <td>${item.quantity}</td>
+              <td>${item.date}</td>
+            `;
+            tbodyExtra.appendChild(tr);
+          });
+        }
+      } catch (err) {
+        console.error('Error cargando ingresos:', err);
+      }
+    }
+
+    // Llamar al cargar la página
+    loadIngresos();
 });
