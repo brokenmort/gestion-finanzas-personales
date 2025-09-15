@@ -34,7 +34,7 @@
                 <table class="fixed-table">
                   <div class="tabs">
                     <input type="button" value="Fixed Income" id="fixIncm">
-                    <input type="button" value="Supplemental Income" id="suppIncm" onclick="document.querySelector('#suppView').style.display = 'block'; document.querySelector('#fixView').style.display = 'none';">
+                    <input type="button" value="Supplemental Income" id="suppIncm" onclick="switchTab('supp')">
                   </div>
                   <thead>
                     <tr>
@@ -45,7 +45,6 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- Aquí JS insertará los ingresos fijos -->
                   </tbody>
                 </table>
               </div>
@@ -56,7 +55,7 @@
               <div class="table-wrap">
                 <table class="supp-table">
                   <div class="tabs">
-                    <input type="button" value="Fixed Income" id="fixIncmSelect" onclick="document.querySelector('#fixView').style.display = 'block'; document.querySelector('#suppView').style.display = 'none';">
+                    <input type="button" value="Fixed Income" id="fixIncmSelect" onclick="switchTab('fix')">
                     <input type="button" value="Supplemental Income" id="suppIncmSelect">
                   </div>
                   <thead>
@@ -67,7 +66,6 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- Aquí JS insertará los ingresos extra -->
                   </tbody>
                 </table>
               </div>
@@ -75,15 +73,15 @@
 
             <!-- Filtros -->
             <div class="menu-list">
-              <label for="filterName">Name:</label></br>
+              <label for="filter1" id="filter1-label">Name:</label></br>
               <div class="split-select">
-                <select id="filterName" name="filterName">
+                <select id="filter1" name="filter1">
                     <option value="">-- All --</option>
                 </select>
               </div>
-              <label for="filterPeriod">Period:</label></br>
+              <label for="filter2" id="filter2-label">Period:</label></br>
               <div class="split-select">
-                <select id="filterPeriod" name="filterPeriod">
+                <select id="filter2" name="filter2">
                     <option value="">-- All --</option>
                 </select>
               </div>
