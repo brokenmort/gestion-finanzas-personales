@@ -28,15 +28,17 @@
             </div>
 
             <!-- Tabs -->
-            <div class="tabs">
-              <input type="button" value="Fixed Income" id="fixIncm">
-              <input type="button" value="Supplemental Income" id="suppIncm" onclick="document.querySelector('.suppView').style.display = 'block'; document.querySelector('.fixView').style.display = 'none';">
-            </div>
+            
+            
 
             <!-- Fixed income table -->
             <div id="fixView" class="tab-view">
               <div class="table-wrap">
+               
                 <table class="fixed-table">
+                   <div class="tabs">
+              <input type="button" value="Fixed Income" id="fixIncm">
+              <input type="button" value="Supplemental Income" id="suppIncm" onclick="document.querySelector('#suppView').style.display = 'block'; document.querySelector('#fixView').style.display = 'none';">
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -65,14 +67,23 @@
                       <td>2025-09-10</td>
                     </tr>
                   </tbody>
+                  </div>
                 </table>
+                
               </div>
             </div>
 
+            
+        
+            
             <!-- Supplemental income table -->
-            <div id="suppView" class="tab-view" style="display:none;">
+            <div id="suppView" class="tab-view" style="display: none;">
               <div class="table-wrap">
+                
                 <table class="supp-table">
+                  <div class="tabs">
+                     <input type="button" value="Fixed Income" id="fixIncmSelect" onclick="document.querySelector('#fixView').style.display = 'block'; document.querySelector('#suppView').style.display = 'none';">
+                    <input type="button" value="Supplemental Income" id="suppIncmSelect">
                   <thead>
                     <tr>
                       <th>Income</th>
@@ -92,7 +103,9 @@
                       <td>Weekly</td>
                     </tr>
                   </tbody>
+                  </div>
                 </table>
+                
               </div>
             </div>
 
@@ -120,8 +133,7 @@
         </div>
     </div>     
     
-    <script src="js/config.js"></script>
-    <script src="js/income.js"></script>
-
+    <!--<script src="js/config.js"></script>
+    <script src="js/income.js"></script>-->
 </body>
 </html>

@@ -80,8 +80,7 @@ body{
   display: none;
 }
 
-/* Tabs (pestañas) */
-.tabs { display:flex; justify-content:center; gap:16px; margin: 10px auto 8px; }
+
 .tab-btn {
   background: #fefae0;
   color: #606c38;
@@ -93,8 +92,16 @@ body{
 }
 .tab-btn.active { background: #606c38; color: #dda15e; }
 
-.table-wrap { background: rgba(222,222,222,0.12); border-radius: 18px; padding: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.12); }
-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow:hidden; }
+.table-wrap { 
+    background: none; border-radius: 18px; padding: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.12); 
+    overflow-x: auto;
+   
+}
+table { 
+    width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow:hidden;
+    box-shadow: 0px 5px 3px 3px rgba(1, 1, 1, 0.1);
+  
+}
 thead th { background:#778647; color:#DDA15E; padding:16px; text-align:center; }
 tbody td { background:#dceda19a; padding:16px; text-align:center; }
 div.contenedor-padre{
@@ -157,7 +164,7 @@ div.contenedor-padre{
     gap: 10px;
 }
 .contenedor .button input:hover{
-    
+    background-color: #dda15e;
     transition: 0.3s;
 }
 table{
@@ -221,7 +228,8 @@ label{
 
 /* Arrow box */
 .split-select::after {
-  position: fixed;
+    content: "▼"; /* you can replace with SVG */
+  position: absolute;
   top: 0;
   right: 0;
   width: 50px;           /* size of arrow area */
@@ -238,22 +246,22 @@ label{
   background: #fdf5d0aa;
   outline: none;
 }
-#search-btn{ width: auto;
+#search-btn{ 
+    width: 20%;
     border-radius: 500px;
     padding: 15px 15px;
     margin: 10px auto;
-    
+    background-color: #a26127;
     color: #fefae0;
     border: none;
     cursor: pointer;
     box-shadow: 0px 5px 3px 3px rgba(1, 1, 1, 0.1);
 }
 #search-btn:hover{
-    
+    background-color: #dda15e;
     transition: 0.3s;
 }
-.suppIncome input,
-.fixIncome input,
+.tabs input,
 #suppIncm,
 #fixIncm {
     width: 30%;
@@ -265,6 +273,7 @@ label{
     color: #0c0c0c;
     border: none;
     cursor: pointer;
+    
 }
 #fixIncmSelect,
 #fixIncm {
@@ -279,11 +288,4 @@ label{
 #suppIncm {
    background-color: #606c389f;
 }
-.suppIncome,
-.fixIncome {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    gap: 0;
-}
+
