@@ -1,9 +1,7 @@
 // Esperamos a que el DOM esté completamente cargado antes de ejecutar el script
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // Recuperamos el token de autenticación guardado en sessionStorage
     const token = sessionStorage.getItem('authToken');
-
     if (!token) { 
         window.location.href = 'index.html'; 
         return; 
@@ -57,6 +55,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // --- Cargar ingresos dinámicamente ---
+    let allFijos = []; // Guardar ingresos fijos para filtrar luego
+
     async function loadIngresos() {
       try {
         // Ingresos Fijos
@@ -64,20 +64,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (resFijos.ok) {
-          const dataFijos = await resFijos.json();
-          const tbodyFijos = document.querySelector('.fixed-table tbody');
-          tbodyFijos.innerHTML = '';
-
-          dataFijos.forEach(item => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${item.name}</td>
-              <td>${item.reason}</td>
-              <td>${item.quantity}</td>
-              <td>${item.period || ''}</td>
-            `;
-            tbodyFijos.appendChild(tr);
-          });
+          allFijos = await resFijos.json();
+          renderFijos(allFijos);
+          fillFilters(allFijos);
         }
 
         // Ingresos Extra
@@ -103,6 +92,63 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error cargando ingresos:', err);
       }
     }
+
+    // Renderizar ingresos fijos
+    function renderFijos(data) {
+      const tbodyFijos = document.querySelector('.fixed-table tbody');
+      tbodyFijos.innerHTML = '';
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.reason}</td>
+          <td>${item.quantity}</td>
+          <td>${item.period || ''}</td>
+        `;
+        tbodyFijos.appendChild(tr);
+      });
+    }
+
+    // Llenar selects de filtros
+    function fillFilters(data) {
+      const nameSelect = document.getElementById('filterName');
+      const periodSelect = document.getElementById('filterPeriod');
+
+      // Valores únicos
+      const names = [...new Set(data.map(i => i.name).filter(Boolean))];
+      const periods = [...new Set(data.map(i => i.period).filter(Boolean))];
+
+      // Llenar combo Name
+      nameSelect.innerHTML = '<option value="">-- All --</option>';
+      names.forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n;
+        opt.textContent = n;
+        nameSelect.appendChild(opt);
+      });
+
+      // Llenar combo Period
+      periodSelect.innerHTML = '<option value="">-- All --</option>';
+      periods.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        periodSelect.appendChild(opt);
+      });
+    }
+
+    // Evento Search
+    document.getElementById('search-btn').addEventListener('click', () => {
+      const nameFilter = document.getElementById('filterName').value;
+      const periodFilter = document.getElementById('filterPeriod').value;
+
+      const filtered = allFijos.filter(item => {
+        return (nameFilter === '' || item.name === nameFilter) &&
+               (periodFilter === '' || item.period === periodFilter);
+      });
+
+      renderFijos(filtered);
+    });
 
     loadIngresos();
 });

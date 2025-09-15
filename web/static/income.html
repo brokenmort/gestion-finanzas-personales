@@ -73,23 +73,23 @@
               </div>
             </div>
 
+            <!-- Filtros -->
             <div class="menu-list">
-              <label for="fI">Income:</label></br>
+              <label for="filterName">Name:</label></br>
               <div class="split-select">
-                <select id="fI" name="fI">
-                    <option value="income1">Income1</option>
-                    <option value="income2">Income2</option>
+                <select id="filterName" name="filterName">
+                    <option value="">-- All --</option>
                 </select>
               </div>
-              <label for="date">Date:</label></br>
+              <label for="filterPeriod">Period:</label></br>
               <div class="split-select">
-                <select id="date" name="date">
-                    <option value="date1">Date1</option>
-                    <option value="date2">Date2</option>
+                <select id="filterPeriod" name="filterPeriod">
+                    <option value="">-- All --</option>
                 </select>
               </div>
               <input type="submit" value="Search" id="search-btn">
             </div>
+
             <div class="button">
                 <input type="button" value="Add New Income" id="Add-btn" onclick="location.href='newIncome.html'">
                 <input type="button" id="Log-btn" value="Log Income" onclick="location.href='logIncome.html'">
