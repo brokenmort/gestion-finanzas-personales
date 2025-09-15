@@ -4,16 +4,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Recuperamos el token de autenticación guardado en sessionStorage
     const token = sessionStorage.getItem('authToken');
 
-    // Si no hay token, redirigimos al login (index.html)
     if (!token) { 
         window.location.href = 'index.html'; 
         return; 
     }
 
-    // Base de la API, la tomamos de config.js o del origen actual de la página
     const API_BASE = window.API_BASE || window.location.origin;
 
-    // Obtenemos referencias a los elementos del DOM
     const nameEl = document.getElementById('incomeUsername');       
     const iconEl = document.getElementById('walletProfileIcon');    
     const imgEl  = document.getElementById('walletProfileImage');   
@@ -74,8 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           dataFijos.forEach(item => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-              <td>${item.id}</td>
-              <td>${item.owner || ''}</td>
               <td>${item.name}</td>
               <td>${item.reason}</td>
               <td>${item.quantity}</td>
@@ -109,6 +104,5 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    // Llamar al cargar la página
     loadIngresos();
 });
