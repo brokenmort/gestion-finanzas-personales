@@ -1,15 +1,57 @@
-# Entornos virtuales
+# ======================================
+# Python
+# ======================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entorno virtual
 venv/
 env/
+.venv/
 Lib/
 Scripts/
+pyvenv.cfg
 
-# Archivos compilados
+# ======================================
+# Archivos de configuración locales
+# ======================================
+*.log
+*.pot
 *.pyc
-__pycache__/
-
-# Base de datos local
+*.pyo
+*.pyd
 *.sqlite3
+db.sqlite3
+.DS_Store
+Thumbs.db
 
-# Configuración local / variables de entorno
+# Variables de entorno
 .env
+*.env
+
+# ======================================
+# Django
+# ======================================
+# Archivos de migración compilados
+*/migrations/*.pyc
+*/migrations/*.pyo
+
+# Archivos estáticos generados
+staticfiles/
+media/
+
+# ======================================
+# IDEs y editores
+# ======================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ======================================
+# Heroku / despliegue
+# ======================================
+# Collectstatic genera estos archivos en Heroku
+/static/
+/staticfiles/
