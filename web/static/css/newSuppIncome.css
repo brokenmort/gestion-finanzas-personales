@@ -32,24 +32,7 @@ div.contenedor-padre{
     overflow: hidden;
     max-height: 600px;
 }
-.expense-form {
-    text-align: center;
-    color: #0c0c0c;
-    font-weight: bold;
-    margin-bottom: 10px;
-    background-color: rgba(255, 255, 255, 0.180);
-    border-radius: 50px;
-    padding-bottom: 20px;
-    height: auto;
-    box-sizing: border-box;
-    max-height: 600px;
-}
-.contenedor .expense-details{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-}
+
 
 .group {
   display: flex;          /* put label + input side by side */
@@ -249,8 +232,6 @@ div.contenedor-padre{
   .contenedor { padding: 16px; }
   .username { flex-direction: column; align-items: flex-start; gap: 10px; }
   .profile-image-preview { width: 100px; height: 100px; }
-
-  .expense-form { padding: 16px; }
   .group { flex-direction: column; align-items: flex-start; }
   .group label { width: 100%; margin: 0 0 5px 0; padding: 0 0 0 10px; }
   .split-select, .info-box { width: 100%; }

@@ -12,7 +12,7 @@
     <!-- Confirm Changes Modal -->
 <div id="confirmModal" class="modal">
   <div class="modal-content">
-    <p>Do you want to add this supplemental income?</p>
+    <p>Do you want to add supplemental income?</p>
     <button id="confirmChangesBtn">Confirm</button>
     <button id="cancelChangesBtn">Cancel</button>
   </div>
@@ -60,20 +60,16 @@
                     </div>
 
                     <div class="group">
-                    <label for="periodicity">Periodicity:</label>
-                    <div class="split-select">
-                    <select id="periodicity" name="periodicity">
-                        <option value="monthly">Monthly</option>
-                        <option value="biweekly">Biweekly</option>
-                        <option value="weekly">Weekly</option>
-                    </select>
+                    <label for="date">Date:</label>
+                    <div class="info-box">
+                    <input type="date" id="date" name="date" required>
                     </div>
                     </div>
                     </div>
                 </form> 
             </div>
             <div class="button">
-                <input type="submit" id="add-btn" value="Add Supplemental Income">
+                <input type="submit" id="add-btn" value="Add Income">
                 <input type="button" id="cancel-btn" value="Cancel" onclick="location.href='income.html'">
             </div>
         </div>
@@ -114,8 +110,7 @@
 </script>
 
 
-  <script src="js/config.js"></script>
-  <script src="js/plantillaBase.js"></script>
+ 
 
 </body>
 </html>
