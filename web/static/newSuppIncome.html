@@ -14,17 +14,17 @@
   <!-- Confirm Changes Modal -->
   <div id="confirmModal" class="modal">
     <div class="modal-content">
-      <p>Do you want to add supplemental income?</p>
-      <button id="confirmChangesBtn">Confirm</button>
-      <button id="cancelChangesBtn">Cancel</button>
+      <p>¿Deseas agregar este ingreso?</p>
+      <button id="confirmChangesBtn">Confirmar</button>
+      <button id="cancelChangesBtn">Cancelar</button>
     </div>
   </div>
 
   <!-- Success Modal -->
   <div id="successModal" class="modal">
     <div class="modal-content">
-      <p>The update was saved successfully!</p>
-      <button id="successOkBtn">Confirm</button>
+      <p>¡El ingreso se guardó correctamente!</p>
+      <button id="successOkBtn">Aceptar</button>
     </div>
   </div>
 
@@ -51,35 +51,28 @@
         <form>
           <div class="income-details">
             <div class="group">
-              <label for="incomeType">Income Type:</label>
+              <label for="incomeType">Tipo de ingreso:</label>
               <div class="info-box">
                 <input type="text" id="incomeType" name="incomeType" required>
               </div>
             </div>
 
             <div class="group">
-              <label for="description">Description:</label>
+              <label for="description">Descripción:</label>
               <div class="info-box">
                 <input type="text" id="description" name="description" required>
               </div>
             </div>
 
             <div class="group">
-              <label for="amount">Amount:</label>
+              <label for="amount">Cantidad:</label>
               <div class="info-box">
                 <input type="number" id="amount" name="amount" required>
               </div>
             </div>
 
             <div class="group">
-              <label for="date">Date:</label>
-              <div class="info-box">
-                <input type="date" id="date" name="date" required>
-              </div>
-            </div>
-
-            <div class="group">
-              <label for="period">Period:</label>
+              <label for="period">Periodicidad:</label>
               <div class="info-box">
                 <select id="period" name="period" required>
                   <option value="diario">Diario</option>
@@ -94,8 +87,8 @@
       </div>
 
       <div class="button">
-        <input type="submit" id="add-btn" value="Add Income">
-        <input type="button" id="cancel-btn" value="Cancel" onclick="location.href='income.html'">
+        <input type="submit" id="add-btn" value="Agregar Ingreso">
+        <input type="button" id="cancel-btn" value="Cancelar" onclick="location.href='income.html'">
       </div>
     </div>
   </div>

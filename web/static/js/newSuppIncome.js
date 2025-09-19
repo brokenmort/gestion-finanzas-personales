@@ -61,15 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const incomeType = document.getElementById('incomeType').value;
     const description = document.getElementById('description').value;
     const amount = document.getElementById('amount').value;
-    const date = document.getElementById('date').value;
     const period = document.getElementById('period').value;
 
     const payload = {
       name: incomeType,
       reason: description,
-      quantity: amount,
-      period: period, // 🔹 valor seleccionado en el <select>
-      date: date
+      quantity: String(amount), // el backend espera string
+      period: period
     };
 
     try {
@@ -83,7 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (!response.ok) {
-        throw new Error("Error al guardar el ingreso");
+        const errorText = await response.text();
+        throw new Error("Error al guardar el ingreso: " + errorText);
       }
 
       confirmModal.style.display = 'none';
