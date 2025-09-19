@@ -1,5 +1,4 @@
-// newSuppIncome.js
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   const token = sessionStorage.getItem('authToken');
   if (!token) { 
     window.location.href = 'index.html'; 
@@ -23,25 +22,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   // ---- Cargar datos del usuario ----
-  try {
-    const res = await fetch(`${API_BASE}/api/auth/me/`, {
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token 
-      },
-    });
-    if (!res.ok) throw new Error('No autorizado');
-    const data = await res.json();
-    if (nameEl) nameEl.textContent = data.first_name || data.email || 'Usuario';
-    const url = resolveImageUrl(data && data.profile_image);
-    if (url && imgEl && iconEl) {
-      imgEl.onload = () => { imgEl.style.display = 'block'; iconEl.style.display = 'none'; };
-      imgEl.onerror = () => { imgEl.style.display = 'none'; iconEl.style.display = 'block'; };
-      imgEl.src = url + (url.includes('?') ? `&t=${Date.now()}` : `?t=${Date.now()}`);
-    }
-  } catch { window.location.href = 'index.html'; }
+  (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/me/`, {
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token 
+        },
+      });
+      if (!res.ok) throw new Error('No autorizado');
+      const data = await res.json();
+      if (nameEl) nameEl.textContent = data.first_name || data.email || 'Usuario';
+      const url = resolveImageUrl(data && data.profile_image);
+      if (url && imgEl && iconEl) {
+        imgEl.onload = () => { imgEl.style.display = 'block'; iconEl.style.display = 'none'; };
+        imgEl.onerror = () => { imgEl.style.display = 'none'; iconEl.style.display = 'block'; };
+        imgEl.src = url + (url.includes('?') ? `&t=${Date.now()}` : `?t=${Date.now()}`);
+      }
+    } catch { window.location.href = 'index.html'; }
+  })();
 
-  // ---- Formularios y botones ----
+  // ---- Formularios y modales ----
   const addBtn = document.getElementById('add-btn');
   const confirmModal = document.getElementById('confirmModal');
   const successModal = document.getElementById('successModal');
@@ -49,24 +50,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   const cancelChangesBtn = document.getElementById('cancelChangesBtn');
   const successOkBtn = document.getElementById('successOkBtn');
 
-  // Mostrar modal de confirmación
+  // Abrir modal de confirmación
   addBtn.onclick = function (e) {
     e.preventDefault();
     confirmModal.style.display = 'flex';
   };
 
-  // Confirmar y hacer POST
+  // Confirmar y guardar en API
   confirmChangesBtn.onclick = async function () {
     const incomeType = document.getElementById('incomeType').value;
     const description = document.getElementById('description').value;
     const amount = document.getElementById('amount').value;
     const date = document.getElementById('date').value;
+    const period = document.getElementById('period').value;
 
     const payload = {
       name: incomeType,
       reason: description,
       quantity: amount,
-      period: "unico", // puedes reemplazar por "semanal", "mensual", etc
+      period: period, // 🔹 valor seleccionado en el <select>
       date: date
     };
 
@@ -92,12 +94,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  // Cancelar modal confirmación
+  // Cerrar modal de confirmación
   cancelChangesBtn.onclick = function () {
     confirmModal.style.display = 'none';
   };
 
-  // Redirigir después del éxito
+  // Redirigir después de éxito
   successOkBtn.onclick = function () {
     window.location.href = "income.html";
   };
