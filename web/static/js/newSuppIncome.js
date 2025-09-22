@@ -49,6 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const confirmChangesBtn = document.getElementById('confirmChangesBtn');
   const cancelChangesBtn = document.getElementById('cancelChangesBtn');
   const successOkBtn = document.getElementById('successOkBtn');
+  const dateInput = document.getElementById('date');
+
+  // Establecer fecha actual por defecto
+  const today = new Date().toISOString().split('T')[0];
+  if (dateInput) dateInput.value = today;
 
   // Abrir modal de confirmación
   addBtn.onclick = function (e) {
@@ -61,12 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const incomeType = document.getElementById('incomeType').value;
     const description = document.getElementById('description').value;
     const amount = document.getElementById('amount').value;
+    const date = document.getElementById('date').value;
 
     const payload = {
       name: incomeType,
       reason: description,
       quantity: String(amount), // el backend espera string
-      period: period
+      date: date
     };
 
     try {
