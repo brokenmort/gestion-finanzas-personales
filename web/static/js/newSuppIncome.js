@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const incomeType = document.getElementById('incomeType').value;
     const description = document.getElementById('description').value;
     const amount = document.getElementById('amount').value;
-    const period = document.getElementById('period').value;
 
     const payload = {
       name: incomeType,
@@ -71,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      const response = await fetch("https://gestion-finanzas-personales-130889bf9a02.herokuapp.com/api/IngresosFijos/", {
+      const response = await fetch("https://gestion-finanzas-personales-130889bf9a02.herokuapp.com/api/IngresosExtra/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
