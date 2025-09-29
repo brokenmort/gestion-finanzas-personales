@@ -62,6 +62,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       data.forEach(item => {
         const tr = document.createElement('tr');
         tr.innerHTML = `<td>${item.name}</td><td>${item.reason}</td><td>${item.quantity}</td><td>${item.period || ''}</td>`;
+        tr.style.cursor = "pointer";
+        tr.addEventListener("click", () => {
+          window.location.href = `newIncome.html?id=${item.id}`;
+        });
         tbody.appendChild(tr);
       });
     }
@@ -72,6 +76,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       data.forEach(item => {
         const tr = document.createElement('tr');
         tr.innerHTML = `<td>${item.name}</td><td>${item.quantity}</td><td>${item.date}</td>`;
+        tr.style.cursor = "pointer";
+        tr.addEventListener("click", () => {
+          window.location.href = `newSuppIncome.html?id=${item.id}`;
+        });
         tbody.appendChild(tr);
       });
     }
