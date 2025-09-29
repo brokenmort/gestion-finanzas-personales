@@ -1,26 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
 <head> 
-    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Home</title> <link rel="stylesheet" href="./css/logIncome.css" /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Sofia&family=Trocchi&display=swap" rel="stylesheet"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Income</title>
+  <link rel="stylesheet" href="./css/logIncome.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 </head> 
-<body> <!-- Confirm Changes Modal --> 
-    <div id="confirmModal" class="modal">
-         <div class="modal-content">
-             <p>Do you want to log income?</p> <button id="confirmChangesBtn">Confirm</button> <button id="cancelChangesBtn">Cancel</button>
-         </div>
-    </div> 
-    
-    <!-- Success Modal --> 
-     <div id="successModal" class="modal"> 
-        <div class="modal-content"> 
-            <p>The income was registered successfully!</p> <button id="successOkBtn">Confirm</button> 
-        </div> 
+<body>
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <p>Do you want to log income?</p>
+      <button id="confirmChangesBtn">Confirm</button>
+      <button id="cancelChangesBtn">Cancel</button>
     </div>
-    <div class="top-bar"> 
-        <img src="icons/backArrow.png" alt="Back" class="backArrow" onclick="history.back()"> <a href="./home.html" class="home-icon"> <i class="bi bi-house-fill"></i></a> 
-    </div>
+  </div> 
 
-    <div class="contenedor-padre"> 
-        <div class="contenedor"> 
-            <div class="username" dir="auto">
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <p>The income was registered successfully!</p>
+      <button id="successOkBtn">Confirm</button>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <img src="icons/backArrow.png" alt="Back" class="backArrow" onclick="history.back()">
+    <a href="./home.html" class="home-icon"><i class="bi bi-house-fill"></i></a>
+  </div>
+
+  <div class="contenedor-padre"> 
+    <div class="contenedor"> 
+      <div class="username" dir="auto">
         <div class="profile-image-preview" id="baseProfileImagePreview">
           <i class="bi bi-person" id="baseProfileIcon"></i>
           <img id="baseProfileImage" alt="Profile image" loading="eager" decoding="async">
@@ -29,143 +44,65 @@
           <h1 id="displayName">Usuario</h1>
         </div>
       </div>
-     
-            <div class="log-button"> 
-                    <input type="button" value="Log Income" id="logDetails">
-                     <input type="button" value="History" id="history"> 
+
+      <!-- Botones de vista -->
+      <div class="log-button"> 
+        <input type="button" value="Log Income" id="logDetails">
+        <input type="button" value="History" id="history"> 
+      </div> 
+
+      <!-- Formulario Log Income -->
+      <div class="log-form">
+        <form class="log-details">
+          <div class="group"> 
+            <label for="income">Income Type:</label> 
+            <div class="split-select">
+              <select id="income" name="income"></select>
             </div> 
-        <div class="log-form"> 
-            <form class="log-details"> 
+          </div>
 
-                     <div class="group"> 
-                        <label for="income">Income Type:</label> 
-                     <div class="split-select"> <select id="income" name="income"> 
-                        <option value="income1">Income1</option> <option value="income2">Income2</option> <option value="income3">Income3</option> 
-                    </select> 
-                    </div> 
-                    </div>
-                    
-                    <div class="group"> 
-                        <label for="amount">Amount:</label> 
-                        <div class="info-box"> <input type="text" id="amount" name="amount" required>
-                        </div>
-                    </div> 
-
-                    <div class="group"> 
-                        <label for="date">Date:</label> 
-                        <div class="info-box"> <input type="date" id="date" name="date" required>
-                        </div>
-                    </div>
-            </form> 
-            
-            <div class="button">
-                <input type="submit" id="save-btn" value="Save"> 
-                <input type="button" id="cancel-btn" value="Cancel" onclick="location.href='./income.html'">
-            </div> 
+          <div class="group"> 
+            <label for="amount">Amount:</label> 
+            <div class="info-box">
+              <input type="number" id="amount" name="amount" required>
             </div>
-            
-            <div class="history-table" style="display: none;">
-                    <div class="history-button"> <input type="button" value="Log Income" id="logDetailsSelect"> <input type="button" value="History" id="historyTableSelect">
-                    </div>
-                        <table class="history-details">
-                    <tr>
-                        <th>Income</th>
-                        <th>Amount</th> <th>Periodicity</th>
-                    </tr>
-                    <tr>
-                        <td>Salary</td>
-                        <td>$500</td>
-                        <td>Monthly</td>
-                    </tr>
-                    <tr> 
-                        <td>Freelance Work</td> <td>$500</td>
-                        <td>Biweekly</td>
-                    </tr> 
-                    <tr>
-                        <td>Investment Returns</td> <td>$500</td>
-                        <td>Weekly</td>
-                    </tr>
-                        </table>
-                </div>
-            </table>
-            
-            <div class="menu-list">
-                <label for="fI">Income:</label></br> <div class="split-select">
-                    <select id="fI" name="fI"> <option value="income1">Income1</option>
-                    <option value="income2">Income2</option>
-                    </select>
-                </div>
+          </div> 
 
-                <label for="date">Date:</label></br> 
-                <div class="split-select"> 
-                    <select id="date" name="date"> <option value="date1">Date1</option>
-                    <option value="date1">Date2</option>
-                    </select>
-                </div>
-                <input type="submit" value="Search" id="search-btn"> 
+          <div class="group"> 
+            <label for="date">Date:</label> 
+            <div class="info-box">
+              <input type="date" id="date" name="date" required>
             </div>
+          </div>
+        </form> 
+
+        <div class="button">
+          <input type="submit" id="save-btn" value="Save"> 
+          <input type="button" id="cancel-btn" value="Cancel" onclick="location.href='./income.html'">
         </div>
+      </div>
+
+      <!-- Tabla de Historial -->
+      <div class="history-table" style="display: none;">
+        <div class="history-button">
+          <input type="button" value="Log Income" id="logDetailsSelect">
+          <input type="button" value="History" id="historyTableSelect">
+        </div>
+        <table class="history-details">
+          <thead>
+            <tr>
+              <th>Income</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
     </div>
-    
-    <script>
-
-
-const logButton = document.querySelector('.log-button');
-const logForm = document.querySelector('.log-form');
-const historyTable = document.querySelector('.history-table');
-const historyBtn = document.getElementById('history');
-const logDetailsBtn = document.getElementById('logDetails');
-const logDetailsSelect = document.getElementById('logDetailsSelect');
-
-// Cuando se hace click en "History"
-historyBtn.onclick = function () {
-  historyTable.style.display = 'block';
-  logForm.style.display = 'none';
-  logButton.style.display = 'none'; // 🔥 ocultar botones principales
-};
-
-// Cuando se hace click en "Log Income" (arriba)
-logDetailsBtn.onclick = function () {
-  logForm.style.display = 'block';
-  historyTable.style.display = 'none';
-  logButton.style.display = 'flex'; // 🔥 mostrar botones de nuevo
-};
-
-// Cuando se hace click en "Log Income" dentro de history
-logDetailsSelect.onclick = function () {
-  logForm.style.display = 'block';
-  historyTable.style.display = 'none';
-  logButton.style.display = 'flex'; // 🔥 mostrar botones de nuevo
-};
-    
-    const saveBtn = document.getElementById('save-btn');
-    const inputs = document.querySelectorAll('.profile-input');
-    let originalValues = {};
-    const confirmModal = document.getElementById('confirmModal');
-    const successModal = document.getElementById('successModal');
-    const confirmChangesBtn = document.getElementById('confirmChangesBtn');
-    const cancelChangesBtn = document.getElementById('cancelChangesBtn');
-    const successOkBtn = document.getElementById('successOkBtn');
-    saveBtn.onclick = function () { 
-        // Show confirmation modal 
-        confirmModal.style.display = 'flex';
-    };
-    confirmChangesBtn.onclick = function () { 
-        // Apply changes
-        inputs.forEach(input => {
-            input.disabled = true;
-        });
-        confirmModal.style.display = 'none'; successModal.style.display = 'flex'; // Show success modal
-    };
-    cancelChangesBtn.onclick = function () { confirmModal.style.display = 'none'; // just close confirm modal
-    };
-    successOkBtn.onclick = function () { window.location.href = "./income.html";  
-    };
-    </script> 
-
+  </div>
     
   <script src="js/config.js"></script>
-  <script src="js/plantillaBase.js"></script>
-
+  <script src="js/logIncome.js"></script>
 </body>
 </html>
