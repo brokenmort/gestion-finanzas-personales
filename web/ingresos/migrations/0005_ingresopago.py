@@ -7,20 +7,35 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ingresos', '0004_alter_ingresosfijos_period'),
+        ("ingresos", "0004_alter_ingresosfijos_period"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='IngresoPago',
+            name="IngresoPago",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('amount', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('ingreso_fijo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pagos', to='ingresos.ingresosfijos')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField()),
+                ("amount", models.DecimalField(max_digits=10, decimal_places=2)),
+                (
+                    "ingreso_fijo",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pagos",
+                        to="ingresos.ingresosfijos",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Pagos de Ingresos',
+                "verbose_name_plural": "Pagos de Ingresos",
             },
         ),
     ]
