@@ -13,6 +13,7 @@ html, body {
   background-repeat: no-repeat;
   background-position: center;
   overflow-x: hidden;
+   overflow-y: auto;
 }
 
 /* Contenedor principal y tarjeta interna */
@@ -98,18 +99,22 @@ html, body {
   color: #0c0c0c;
   font-weight: bold;
   font-size: 14px;
-  margin: -5px 10px 10px;
+  margin: -5px auto 0 auto;
   background-color: rgba(255, 255, 255, 0.180); border-radius: 50px;
   padding: 10px 20px;
   height: auto;
   width: 80%;
   box-sizing: border-box;
   max-height: none;
+  transform: translateY(-25px);
+  
 }
 
 .status-table{
-    margin-top: 20px;
     height: auto;
+      width: 90%; /* 🔥 tabla centrada y no pegada a los bordes */
+  margin: 0 auto;
+   overflow-x: auto;
 }
   
 
@@ -119,6 +124,7 @@ html, body {
   gap: 5px;
   width: 100%;
   margin: 5px 0;
+  
 }
 
 .group label {
@@ -128,6 +134,7 @@ html, body {
   padding: 9px 0 9px 9px;
   margin: 5px 0 0 5px;
   font-weight: bold;
+  
 }
 
 .split-select, .info-box {
@@ -137,6 +144,7 @@ html, body {
   border-radius: 50px;
   overflow: hidden;
   box-shadow: 0px 5px 3px 3px rgba(1, 1, 1, 0.1);
+  
 }
 
 .info-box input {
@@ -323,12 +331,16 @@ td{
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  transform: translateY(-30px);
   gap: 0;
 }
 .log-button {
-  margin-left: 32px;
-  margin-bottom: 0;
+  width: 80%;                 /* mismo ancho que .log-form */
+  margin: 0 auto 0 auto;   /* centrado dentro del contenedor */
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start; /* 🔥 alinear a la izquierda */
+  align-items: center;
 }
 
 /* Modal background */
