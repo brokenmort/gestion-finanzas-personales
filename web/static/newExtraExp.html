@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plantilla Base</title>
+  <title>Nuevo Gasto Variable</title>
   <link rel="stylesheet" href="css/newExtraExp.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,10 +12,10 @@
 </head>
 <body>
 
-    <!-- Confirm Changes Modal -->
+<!-- Confirm Changes Modal -->
 <div id="confirmModal" class="modal">
   <div class="modal-content">
-    <p>Do you want to add extra expense?</p>
+    <p id="confirmText">Do you want to add extra expense?</p>
     <button id="confirmChangesBtn">Confirm</button>
     <button id="cancelChangesBtn">Cancel</button>
   </div>
@@ -24,98 +24,67 @@
 <!-- Success Modal -->
 <div id="successModal" class="modal">
   <div class="modal-content">
-    <p>The update was saved successfully!</p>
+    <p id="successText">The update was saved successfully!</p>
     <button id="successOkBtn">Confirm</button>
   </div>
 </div>
 
-  <div class="top-bar">
-    <img src="icons/backArrow.png" alt="Back" class="backArrow" onclick="history.back()">
-    <a href="home.html" class="home-icon"><i class="bi bi-house-fill"></i></a>
-  </div>
-  <!-- Contenedor principal -->
-  <div class="contenedor-padre">
-    <div class="contenedor">
-      <div class="username" dir="auto">
-        <div class="profile-image-preview" id="baseProfileImagePreview">
-          <i class="bi bi-person" id="baseProfileIcon"></i>
-          <img id="baseProfileImage" alt="Profile image" loading="eager" decoding="async">
-        </div>
-        <div class="profile-info">
-          <h1 id="displayName">Usuario</h1>
-        </div>
+<div class="top-bar">
+  <img src="icons/backArrow.png" alt="Back" class="backArrow" onclick="history.back()">
+  <a href="home.html" class="home-icon"><i class="bi bi-house-fill"></i></a>
+</div>
+
+<!-- Contenedor principal -->
+<div class="contenedor-padre">
+  <div class="contenedor">
+    <div class="username" dir="auto">
+      <div class="profile-image-preview" id="baseProfileImagePreview">
+        <i class="bi bi-person" id="baseProfileIcon"></i>
+        <img id="baseProfileImage" alt="Profile image" loading="eager" decoding="async">
       </div>
-
-      <div class="expense-form">
-                <form>
-                    <div class="expense-details">
-
-                    <div class="group">
-                    <label for="expenseType">Expense Type:</label>
-                    <div class="info-box">
-                    <input type="text" id="expenseType" name="expenseType" required>
-                    </div>
-                    </div>
-
-                     <div class="group">
-                    <label for="amount">Amount:</label>
-                    <div class="info-box">
-                    <input type="number" id="amount" name="amount" required>
-                    </div>
-                    </div>
-
-                    <div class="group">
-                    <label for="date">Date:</label>
-                    <div class="info-box">
-                    <input type="date" id="date" name="date" required>
-                    </div>
-                    </div>
-                </form> 
-            </div>
-            <div class="button">
-                <input type="submit" id="add-btn" value="Add Extra Expense">
-                <input type="button" id="cancel-btn" value="Cancel" onclick="location.href='expenses.html'">
-            </div>
-        </div>
+      <div class="profile-info">
+        <h1 id="displayName">Usuario</h1>
+      </div>
     </div>
-    <script>
 
-  const addBtn = document.getElementById('add-btn');
-  const inputs = document.querySelectorAll('.profile-input');
-  let originalValues = {};
+    <div class="expense-form">
+      <form>
+        <div class="expense-details">
 
-  const confirmModal = document.getElementById('confirmModal');
-  const successModal = document.getElementById('successModal');
-  const confirmChangesBtn = document.getElementById('confirmChangesBtn');
-  const cancelChangesBtn = document.getElementById('cancelChangesBtn');
-  const successOkBtn = document.getElementById('successOkBtn');
+          <div class="group">
+            <label for="expenseType">Expense Type:</label>
+            <div class="info-box">
+              <input type="text" id="expenseType" name="expenseType" required>
+            </div>
+          </div>
 
-  addBtn.onclick = function () {
-      // Show confirmation modal
-      confirmModal.style.display = 'flex';
-  };
+          <div class="group">
+            <label for="amount">Amount:</label>
+            <div class="info-box">
+              <input type="number" id="amount" name="amount" required>
+            </div>
+          </div>
 
-  confirmChangesBtn.onclick = function () {
-      // Apply changes
-      inputs.forEach(input => {
-          input.disabled = true;
-      });
-      confirmModal.style.display = 'none';
-      successModal.style.display = 'flex'; // Show success modal
-  };
+          <div class="group">
+            <label for="date">Date:</label>
+            <div class="info-box">
+              <input type="date" id="date" name="date" required>
+            </div>
+          </div>
+        </div>
+      </form> 
+    </div>
 
-  cancelChangesBtn.onclick = function () {
-      confirmModal.style.display = 'none'; // just close confirm modal
-  };
-
-  successOkBtn.onclick = function () {
-      window.location.href = "expenses.html";
-  };
-</script>
+    <div class="button">
+      <input type="submit" id="add-btn" value="Add Extra Expense">
+      <input type="button" id="cancel-btn" value="Cancel" onclick="location.href='expenses.html'">
+      <input type="button" id="delete-btn" value="Delete" style="display:none; background:#d9534f; color:white;">
+    </div>
+  </div>
+</div>
 
 <script src="js/config.js"></script>
-<script src="js/income.js"></script>
+<script src="js/newExtraExp.js"></script>
 
 </body>
 </html>
-
