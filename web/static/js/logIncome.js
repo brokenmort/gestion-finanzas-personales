@@ -10,7 +10,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const nameEl = document.getElementById('displayName');
   const iconEl = document.getElementById('baseProfileIcon');
   const imgEl = document.getElementById('baseProfileImage');
+  const incomeSelect = document.getElementById('income');
+  const amountInput = document.getElementById('amount');
+  const dateInput = document.getElementById('date');
+  const historyBody = document.getElementById('historyBody');
 
+  // Resolver URL de imagen
   const resolveImageUrl = (raw) => {
     if (!raw) return null;
     const s = String(raw).trim();
@@ -20,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return `${API_BASE}${path}`;
   };
 
-  // --- Cargar usuario ---
+  // --- Cargar datos de usuario ---
   try {
     const res = await fetch(`${API_BASE}/api/auth/me/`, {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
@@ -38,8 +43,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = 'index.html';
   }
 
+  // --- Fecha actual por defecto ---
+  dateInput.value = new Date().toISOString().split("T")[0];
+
   // --- Cargar ingresos fijos ---
-  const incomeSelect = document.getElementById('income');
   let ingresosFijos = [];
   try {
     const res = await fetch(`${API_BASE}/api/IngresosFijos/`, {
@@ -52,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const opt = document.createElement('option');
         opt.value = ing.id;
         opt.textContent = `${ing.name} (${ing.period})`;
+        opt.dataset.quantity = ing.quantity;
         incomeSelect.appendChild(opt);
       });
     }
@@ -59,27 +67,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Error cargando ingresos fijos:', err);
   }
 
-  // --- Manejo de vistas (log vs history) ---
-  const logButton = document.querySelector('.log-button');
-  const logForm = document.querySelector('.log-form');
-  const historyTable = document.querySelector('.history-table');
-  const historyBtn = document.getElementById('history');
-  const logDetailsBtn = document.getElementById('logDetails');
-  const logDetailsSelect = document.getElementById('logDetailsSelect');
-  const historyBody = document.getElementById('historyBody');
-
-  historyBtn.onclick = function () {
-    historyTable.style.display = 'block';
-    logForm.style.display = 'none';
-    logButton.style.display = 'none';
-    loadHistory();
-  };
-
-  logDetailsBtn.onclick = logDetailsSelect.onclick = function () {
-    logForm.style.display = 'block';
-    historyTable.style.display = 'none';
-    logButton.style.display = 'flex';
-  };
+  // --- Autocompletar Amount al seleccionar ingreso ---
+  incomeSelect.addEventListener('change', (e) => {
+    const selected = incomeSelect.options[incomeSelect.selectedIndex];
+    if (selected && selected.dataset.quantity) {
+      amountInput.value = selected.dataset.quantity;
+    } else {
+      amountInput.value = '';
+    }
+  });
 
   // --- Guardar pago ---
   const saveBtn = document.getElementById('save-btn');
@@ -96,8 +92,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   confirmChangesBtn.onclick = async function () {
     const incomeId = incomeSelect.value;
-    const amount = document.getElementById('amount').value;
-    const date = document.getElementById('date').value;
+    const amount = amountInput.value;
+    const date = dateInput.value;
 
     if (!incomeId || !amount || !date) {
       alert("Please fill all fields");
@@ -130,7 +126,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   cancelChangesBtn.onclick = () => { confirmModal.style.display = 'none'; };
   successOkBtn.onclick = () => { window.location.href = "./income.html"; };
 
-  // --- Cargar historial de pagos ---
+  // --- Manejo de vistas (log vs history) ---
+  const logButton = document.querySelector('.log-button');
+  const logForm = document.querySelector('.log-form');
+  const historyTable = document.querySelector('.history-table');
+  const historyBtn = document.getElementById('history');
+  const logDetailsBtn = document.getElementById('logDetails');
+  const logDetailsSelect = document.getElementById('logDetailsSelect');
+
+  historyBtn.onclick = function () {
+    historyTable.style.display = 'block';
+    logForm.style.display = 'none';
+    logButton.style.display = 'none';
+    loadHistory();
+  };
+
+  logDetailsBtn.onclick = logDetailsSelect.onclick = function () {
+    logForm.style.display = 'block';
+    historyTable.style.display = 'none';
+    logButton.style.display = 'flex';
+  };
+
+  // --- Cargar historial ---
   async function loadHistory() {
     historyBody.innerHTML = '';
     for (let ing of ingresosFijos) {
