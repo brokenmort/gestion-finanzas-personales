@@ -4,29 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nuevo Ingreso</title>
-  <link rel="stylesheet" href="css/newIncome.css" />
+  <link rel="stylesheet" href="css/loans.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Sofia&family=Trocchi&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Confirm Modal -->
-  <div id="confirmModal" class="modal">
-    <div class="modal-content">
-      <p>¿Deseas agregar este ingreso?</p>
-      <button id="confirmChangesBtn">Confirmar</button>
-      <button id="cancelChangesBtn">Cancelar</button>
-    </div>
-  </div>
-
-  <!-- Success Modal -->
-  <div id="successModal" class="modal">
-    <div class="modal-content">
-      <p>¡El ingreso se guardó correctamente!</p>
-      <button id="successOkBtn">Aceptar</button>
-    </div>
-  </div>
 
   <!-- Barra superior -->
   <div class="top-bar">
@@ -48,20 +32,13 @@
         </div>
       </div>
 
-      <div class="income-form">
+      <div class="loan-form">
         <form>
-          <div class="income-details">
+          <div class="loan-test">
             <div class="group">
-              <label for="incomeType">Tipo de ingreso:</label>
+              <label for="reason">Razón:</label>
               <div class="info-box">
-                <input type="text" id="incomeType" name="incomeType" required>
-              </div>
-            </div>
-
-            <div class="group">
-              <label for="description">Descripción:</label>
-              <div class="info-box">
-                <input type="text" id="description" name="description" required>
+                <input type="text" id="reason" name="reason" required>
               </div>
             </div>
 
@@ -72,31 +49,19 @@
               </div>
             </div>
 
-            <div class="group">
-              <label for="period">Periodicidad:</label>
-              <div class="split-select">
-                <select id="period" name="period" required>
-                  <option value="diario">Diario</option>
-                  <option value="semanal">Semanal</option>
-                  <option value="quincenal">Quincenal</option>
-                  <option value="mensual">Mensual</option>
-                </select>
-              </div>
-            </div>
           </div>
         </form>
       </div>
 
       <div class="button">
-        <input type="submit" id="add-btn" value="Agregar Ingreso">
-        <input type="button" id="cancel-btn" value="Cancelar" onclick="location.href='income.html'">
+        <input type="submit" id="test-btn" value="Analizar" onclick="location.href='loanAnalysis.html'">
+        <input type="button" id="cancel-btn" value="Cancelar" onclick="location.href='wallet.html'">
       </div>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="js/config.js"></script>
-  <script src="js/newIncome.js"></script>
+
   
 </body>
 </html>
