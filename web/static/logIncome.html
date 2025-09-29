@@ -89,7 +89,18 @@
           <input type="button" value="History" id="historyTableSelect">
         </div>
 
-        <!-- Filtros -->
+        <table class="history-details">
+          <thead>
+            <tr>
+              <th>Income</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+
+        <!-- Filtros debajo de la tabla -->
         <div class="menu-list">
           <label for="filterIncome">Income:</label><br>
           <div class="split-select">
@@ -107,17 +118,6 @@
 
           <input type="submit" value="Search" id="search-btn">
         </div>
-
-        <table class="history-details">
-          <thead>
-            <tr>
-              <th>Income</th>
-              <th>Amount</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="historyBody"></tbody>
-        </table>
       </div>
     </div>
   </div>

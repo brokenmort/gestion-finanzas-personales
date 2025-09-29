@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         opt.dataset.quantity = ing.quantity;
         incomeSelect.appendChild(opt);
 
-        // Filtro por nombre
         const opt2 = document.createElement('option');
         opt2.value = ing.name;
         opt2.textContent = ing.name;
