@@ -77,10 +77,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function fillFiltersFix(data) {
-      document.getElementById('filter1-label').textContent = 'Name:';
-      document.getElementById('filter2-label').textContent = 'Period:';
-      const f1 = document.getElementById('filter1');
-      const f2 = document.getElementById('filter2');
+      const f1 = document.getElementById('fixFilter1');
+      const f2 = document.getElementById('fixFilter2');
       const names = [...new Set(data.map(i => i.name).filter(Boolean))];
       const periods = [...new Set(data.map(i => i.period).filter(Boolean))];
       f1.innerHTML = '<option value="">-- All --</option>';
@@ -90,10 +88,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function fillFiltersSupp(data) {
-      document.getElementById('filter1-label').textContent = 'Income:';
-      document.getElementById('filter2-label').textContent = 'Date:';
-      const f1 = document.getElementById('filter1');
-      const f2 = document.getElementById('filter2');
+      const f1 = document.getElementById('suppFilter1');
+      const f2 = document.getElementById('suppFilter2');
       const names = [...new Set(data.map(i => i.name).filter(Boolean))];
       const dates = [...new Set(data.map(i => i.date).filter(Boolean))];
       f1.innerHTML = '<option value="">-- All --</option>';
@@ -102,20 +98,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       dates.forEach(d => f2.innerHTML += `<option value="${d}">${d}</option>`);
     }
 
-    document.getElementById('search-btn').addEventListener('click', () => {
-      const f1 = document.getElementById('filter1').value;
-      const f2 = document.getElementById('filter2').value;
-      if (currentTab === 'fix') {
-        const filtered = allFijos.filter(i =>
-          (f1 === '' || i.name === f1) && (f2 === '' || i.period === f2)
-        );
-        renderFijos(filtered);
-      } else {
-        const filtered = allExtra.filter(i =>
-          (f1 === '' || i.name === f1) && (f2 === '' || i.date === f2)
-        );
-        renderExtra(filtered);
-      }
+    // Filtros FIX
+    document.getElementById('fixSearchBtn').addEventListener('click', () => {
+      const f1 = document.getElementById('fixFilter1').value;
+      const f2 = document.getElementById('fixFilter2').value;
+      const filtered = allFijos.filter(i =>
+        (f1 === '' || i.name === f1) && (f2 === '' || i.period === f2)
+      );
+      renderFijos(filtered);
+    });
+
+    // Filtros SUPP
+    document.getElementById('suppSearchBtn').addEventListener('click', () => {
+      const f1 = document.getElementById('suppFilter1').value;
+      const f2 = document.getElementById('suppFilter2').value;
+      const filtered = allExtra.filter(i =>
+        (f1 === '' || i.name === f1) && (f2 === '' || i.date === f2)
+      );
+      renderExtra(filtered);
     });
 
     window.switchTab = (tab) => {
