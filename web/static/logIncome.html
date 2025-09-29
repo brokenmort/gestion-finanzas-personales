@@ -88,6 +88,26 @@
           <input type="button" value="Log Income" id="logDetailsSelect">
           <input type="button" value="History" id="historyTableSelect">
         </div>
+
+        <!-- Filtros -->
+        <div class="menu-list">
+          <label for="filterIncome">Income:</label><br>
+          <div class="split-select">
+            <select id="filterIncome" name="filterIncome">
+              <option value="">-- All --</option>
+            </select>
+          </div>
+
+          <label for="filterDate">Date:</label><br>
+          <div class="split-select">
+            <select id="filterDate" name="filterDate">
+              <option value="">-- All --</option>
+            </select>
+          </div>
+
+          <input type="submit" value="Search" id="search-btn">
+        </div>
+
         <table class="history-details">
           <thead>
             <tr>

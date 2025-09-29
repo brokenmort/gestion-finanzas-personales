@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const token = sessionStorage.getItem('authToken');
-  if (!token) {
-    window.location.href = 'index.html';
-    return;
-  }
+  if (!token) { window.location.href = 'index.html'; return; }
 
   const API_BASE = window.API_BASE || window.location.origin;
 
@@ -14,70 +11,66 @@ document.addEventListener('DOMContentLoaded', async () => {
   const amountInput = document.getElementById('amount');
   const dateInput = document.getElementById('date');
   const historyBody = document.getElementById('historyBody');
+  const filterIncome = document.getElementById('filterIncome');
+  const filterDate = document.getElementById('filterDate');
 
-  // Resolver URL de imagen
   const resolveImageUrl = (raw) => {
     if (!raw) return null;
     const s = String(raw).trim();
-    if (!s) return null;
     if (/^https?:\/\//i.test(s)) return s;
-    const path = s.startsWith('/') ? s : `/${s}`;
-    return `${API_BASE}${path}`;
+    return `${API_BASE}/${s}`;
   };
 
-  // --- Cargar datos de usuario ---
+  // --- User info ---
   try {
     const res = await fetch(`${API_BASE}/api/auth/me/`, {
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      headers: { 'Authorization': 'Bearer ' + token }
     });
     if (!res.ok) throw new Error('No autorizado');
     const data = await res.json();
-    if (nameEl) nameEl.textContent = data.first_name || data.email || 'Usuario';
-    const url = resolveImageUrl(data && data.profile_image);
-    if (url && imgEl && iconEl) {
+    nameEl.textContent = data.first_name || data.email || 'Usuario';
+    const url = resolveImageUrl(data.profile_image);
+    if (url) {
       imgEl.onload = () => { imgEl.style.display = 'block'; iconEl.style.display = 'none'; };
       imgEl.onerror = () => { imgEl.style.display = 'none'; iconEl.style.display = 'block'; };
       imgEl.src = url + (url.includes('?') ? `&t=${Date.now()}` : `?t=${Date.now()}`);
     }
-  } catch {
-    window.location.href = 'index.html';
-  }
+  } catch { window.location.href = 'index.html'; }
 
-  // --- Fecha actual por defecto ---
+  // --- Fecha actual ---
   dateInput.value = new Date().toISOString().split("T")[0];
 
   // --- Cargar ingresos fijos ---
   let ingresosFijos = [];
   try {
-    const res = await fetch(`${API_BASE}/api/IngresosFijos/`, {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    const res = await fetch(`${API_BASE}/api/IngresosFijos/`, { headers: { 'Authorization': 'Bearer ' + token } });
     if (res.ok) {
       ingresosFijos = await res.json();
       incomeSelect.innerHTML = '<option value="">-- Select --</option>';
+      filterIncome.innerHTML = '<option value="">-- All --</option>';
       ingresosFijos.forEach(ing => {
         const opt = document.createElement('option');
         opt.value = ing.id;
         opt.textContent = `${ing.name} (${ing.period})`;
         opt.dataset.quantity = ing.quantity;
         incomeSelect.appendChild(opt);
+
+        // Filtro por nombre
+        const opt2 = document.createElement('option');
+        opt2.value = ing.name;
+        opt2.textContent = ing.name;
+        filterIncome.appendChild(opt2);
       });
     }
-  } catch (err) {
-    console.error('Error cargando ingresos fijos:', err);
-  }
+  } catch (err) { console.error(err); }
 
-  // --- Autocompletar Amount al seleccionar ingreso ---
-  incomeSelect.addEventListener('change', (e) => {
+  // Autocompletar amount
+  incomeSelect.addEventListener('change', () => {
     const selected = incomeSelect.options[incomeSelect.selectedIndex];
-    if (selected && selected.dataset.quantity) {
-      amountInput.value = selected.dataset.quantity;
-    } else {
-      amountInput.value = '';
-    }
+    amountInput.value = selected?.dataset.quantity || '';
   });
 
-  // --- Guardar pago ---
+  // Guardar pago
   const saveBtn = document.getElementById('save-btn');
   const confirmModal = document.getElementById('confirmModal');
   const successModal = document.getElementById('successModal');
@@ -85,36 +78,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const cancelChangesBtn = document.getElementById('cancelChangesBtn');
   const successOkBtn = document.getElementById('successOkBtn');
 
-  saveBtn.onclick = function (e) {
-    e.preventDefault();
-    confirmModal.style.display = 'flex';
-  };
-
-  confirmChangesBtn.onclick = async function () {
+  saveBtn.onclick = (e) => { e.preventDefault(); confirmModal.style.display = 'flex'; };
+  confirmChangesBtn.onclick = async () => {
     const incomeId = incomeSelect.value;
-    const amount = amountInput.value;
-    const date = dateInput.value;
-
-    if (!incomeId || !amount || !date) {
-      alert("Please fill all fields");
-      return;
-    }
-
+    if (!incomeId) return alert("Select income");
     try {
-      const response = await fetch(`${API_BASE}/api/IngresosFijos/${incomeId}/pagos/`, {
+      const res = await fetch(`${API_BASE}/api/IngresosFijos/${incomeId}/pagos/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify({ amount: String(amount), date: date })
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ amount: amountInput.value, date: dateInput.value })
       });
-
-      if (!response.ok) {
-        const err = await response.text();
-        throw new Error(err);
-      }
-
+      if (!res.ok) throw new Error(await res.text());
       confirmModal.style.display = 'none';
       successModal.style.display = 'flex';
     } catch (err) {
@@ -122,11 +96,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert("Error: " + err.message);
     }
   };
+  cancelChangesBtn.onclick = () => confirmModal.style.display = 'none';
+  successOkBtn.onclick = () => window.location.href = "./income.html";
 
-  cancelChangesBtn.onclick = () => { confirmModal.style.display = 'none'; };
-  successOkBtn.onclick = () => { window.location.href = "./income.html"; };
-
-  // --- Manejo de vistas (log vs history) ---
+  // Vistas
   const logButton = document.querySelector('.log-button');
   const logForm = document.querySelector('.log-form');
   const historyTable = document.querySelector('.history-table');
@@ -134,38 +107,58 @@ document.addEventListener('DOMContentLoaded', async () => {
   const logDetailsBtn = document.getElementById('logDetails');
   const logDetailsSelect = document.getElementById('logDetailsSelect');
 
-  historyBtn.onclick = function () {
-    historyTable.style.display = 'block';
-    logForm.style.display = 'none';
-    logButton.style.display = 'none';
-    loadHistory();
-  };
+  historyBtn.onclick = () => { historyTable.style.display = 'block'; logForm.style.display = 'none'; logButton.style.display = 'none'; loadHistory(); };
+  logDetailsBtn.onclick = logDetailsSelect.onclick = () => { logForm.style.display = 'block'; historyTable.style.display = 'none'; logButton.style.display = 'flex'; };
 
-  logDetailsBtn.onclick = logDetailsSelect.onclick = function () {
-    logForm.style.display = 'block';
-    historyTable.style.display = 'none';
-    logButton.style.display = 'flex';
-  };
-
-  // --- Cargar historial ---
+  // Historial
+  let allPagos = [];
   async function loadHistory() {
     historyBody.innerHTML = '';
+    allPagos = [];
+    const datesSet = new Set();
+
     for (let ing of ingresosFijos) {
       try {
-        const res = await fetch(`${API_BASE}/api/IngresosFijos/${ing.id}/pagos/`, {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
+        const res = await fetch(`${API_BASE}/api/IngresosFijos/${ing.id}/pagos/`, { headers: { 'Authorization': 'Bearer ' + token } });
         if (res.ok) {
           const pagos = await res.json();
           pagos.forEach(p => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${ing.name}</td><td>${p.amount}</td><td>${p.date}</td>`;
-            historyBody.appendChild(tr);
+            allPagos.push({ name: ing.name, amount: p.amount, date: p.date });
+            datesSet.add(p.date);
           });
         }
-      } catch (err) {
-        console.error('Error cargando historial:', err);
-      }
+      } catch (err) { console.error(err); }
     }
+
+    // Popular filtro de fechas
+    filterDate.innerHTML = '<option value="">-- All --</option>';
+    Array.from(datesSet).sort().forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = d;
+      filterDate.appendChild(opt);
+    });
+
+    renderHistory(allPagos);
   }
+
+  function renderHistory(data) {
+    historyBody.innerHTML = '';
+    data.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${p.name}</td><td>${p.amount}</td><td>${p.date}</td>`;
+      historyBody.appendChild(tr);
+    });
+  }
+
+  // Filtros
+  document.getElementById('search-btn').addEventListener('click', () => {
+    const fName = filterIncome.value;
+    const fDate = filterDate.value;
+    const filtered = allPagos.filter(p =>
+      (fName === '' || p.name === fName) &&
+      (fDate === '' || p.date === fDate)
+    );
+    renderHistory(filtered);
+  });
 });
