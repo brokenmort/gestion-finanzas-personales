@@ -6,10 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const API_BASE = window.API_BASE || window.location.origin;
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id"); // si viene, es edición
 
   const nameEl = document.getElementById('displayName');       
   const iconEl = document.getElementById('baseProfileIcon');    
   const imgEl  = document.getElementById('baseProfileImage');   
+
+  const confirmText = document.getElementById("confirmText");
+  const successText = document.getElementById("successText");
+  const deleteBtn = document.getElementById("delete-btn");
 
   // ---- Resolver imagen de perfil ----
   const resolveImageUrl = (raw) => {
@@ -50,6 +56,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelChangesBtn = document.getElementById('cancelChangesBtn');
   const successOkBtn = document.getElementById('successOkBtn');
 
+  // Si estamos editando, cargar datos
+  if (id) {
+    addBtn.value = "Guardar Cambios";
+    confirmText.textContent = "¿Deseas guardar los cambios de este ingreso?";
+    successText.textContent = "¡El ingreso se actualizó correctamente!";
+    deleteBtn.style.display = "inline-block";
+
+    (async () => {
+      const res = await fetch(`${API_BASE}/api/IngresosFijos/${id}/`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById("incomeType").value = data.name || "";
+        document.getElementById("description").value = data.reason || "";
+        document.getElementById("amount").value = data.quantity || "";
+        document.getElementById("period").value = data.period || "mensual";
+      }
+    })();
+
+    // Eliminar
+    deleteBtn.onclick = async () => {
+      if (confirm("¿Seguro que deseas eliminar este ingreso?")) {
+        await fetch(`${API_BASE}/api/IngresosFijos/${id}/`, {
+          method: "DELETE",
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        window.location.href = "income.html";
+      }
+    };
+  }
+
   // Abrir modal de confirmación
   addBtn.onclick = function (e) {
     e.preventDefault();
@@ -66,21 +104,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const payload = {
       name: incomeType,
       reason: description,
-      quantity: String(amount), // el backend espera string
+      quantity: String(amount),
       period: period
     };
 
-    console.log("Enviando payload:", payload);
-
     try {
-      const response = await fetch("https://gestion-finanzas-personales-130889bf9a02.herokuapp.com/api/IngresosFijos/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+        id ? `${API_BASE}/api/IngresosFijos/${id}/` : `${API_BASE}/api/IngresosFijos/`,
+        {
+          method: id ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify(payload)
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();

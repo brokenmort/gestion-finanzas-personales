@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plantilla Base</title>
+  <title>Gastos</title>
   <link rel="stylesheet" href="css/expenses.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +15,7 @@
     <img src="icons/backArrow.png" alt="Back" class="backArrow" onclick="history.back()">
     <a href="home.html" class="home-icon"><i class="bi bi-house-fill"></i></a>
   </div>
+
   <!-- Contenedor principal -->
   <div class="contenedor-padre">
     <div class="contenedor">
@@ -28,120 +29,91 @@
         </div>
       </div>
 
-      <!--
-        Área de contenido para formularios o vistas específicas.
-        Duplica este archivo y reemplaza el contenido del div #formContent
-        según el caso de uso (inputs, botones, tablas, etc.).
-      -->
-      <div id="formContent">
-        <!-- Coloca aquí el formulario o contenido de la nueva vista -->
-
-        <div class="fixView">
-            <table class="fixed-table">
-                <div class="fixedExpense">
-                    <input type="button" value="Fixed Expenses" id="fixExp">
-                    <input type="button" value="Variable Expenses" id="varExp" onclick="document.querySelector('.suppView').style.display = 'block'; document.querySelector('.fixView').style.display = 'none';">
-                <tr>
-                    <th>Expenses</th>
-                    <th>Amount</th>
-                    <th>Periodicity</th>
-                </tr>
-                <tr>
-                    <td>Heroku hpta</td>
-                    <td>$5</td>
-                    <td>Monthly</td>
-                </tr>
-                <tr>
-                    <td>Rent</td>
-                    <td>$1500</td>
-                    <td>Biweekly</td>
-                </tr>
-                <tr>
-                    <td>Investment Returns</td>
-                    <td>$500</td>
-                    <td>Weekly</td>
-                </tr>
-                </div>
-            </table>
-
-            <div class="menu-list">
-              <label for="pay">Payment:</label></br>
-              <div class="split-select">
-            <select id="pay" name="pay">
-                <option value="payment1">Payment1</option>
-                <option value="payment2">Payment2</option>
-            </select>
+      <!-- Gastos fijos -->
+      <div id="fixView" class="tab-view">
+        <div class="table-wrap">
+          <table class="fixed-table">
+            <div class="tabs">
+              <input type="button" value="Fixed Expenses" id="fixExp">
+              <input type="button" value="Variable Expenses" id="varExp" onclick="switchTab('var')">
             </div>
-            <label for="date">Date:</label></br>
+            <thead>
+              <tr>
+                <th>Expense</th>
+                <th>Amount</th>
+                <th>Periodicity</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <div class="menu-list">
+            <label for="fixFilter1">Expense:</label></br>
             <div class="split-select">
-            <select id="date" name="date">
-                <option value="date1">Date1</option>
-                <option value="date1">Date2</option>
-            </select>
+              <select id="fixFilter1" name="fixFilter1">
+                <option value="">-- All --</option>
+              </select>
             </div>
-            <input type="submit" value="Search" id="search-btn">
-            </div>
-            <div class="button">
-                <input type="button" value="Add New Expense" id="Add-btn" onclick="location.href='newExpense.html'">
-                <input type="button" id="Log-btn" value="Log Payment" onclick="location.href='logPayment.html'">
-            </div>
-
-            </div>
-
-            <div class="suppView" style="display: none;">
-            <table class="supp-table">
-                <div class="varExpense">
-                     <input type="button" value="Fixed Expenses" id="fixExpSelect" onclick="document.querySelector('.fixView').style.display = 'block'; document.querySelector('.suppView').style.display = 'none';">
-                    <input type="button" value="Variable Expenses" id="varExpSelect">
-                <tr>
-                    <th>Expenses</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                </tr>
-                <tr>
-                    <td>Guayos</td>
-                    <td>$45</td>
-                    <td>08-28-2025</td>
-                </tr>
-                <tr>
-                    <td>Freelance Work</td>
-                    <td>$500</td>
-                    <td>10-15-2025</td>
-                </tr>
-                <tr>
-                    <td>New Phone</td>
-                    <td>$700</td>
-                    <td>11-20-2025</td>
-                </div>
-            </table>
-
-            <div class="menu-list">
-              <label for="pay">Payment:</label></br>
-              <div class="split-select">
-            <select id="pay" name="pay">
-                <option value="payment1">Payment1</option>
-                <option value="payment2">Payment2</option>
-            </select>
-            </div>
-            <label for="date">Date:</label></br>
+            <label for="fixFilter2">Periodicity:</label></br>
             <div class="split-select">
-            <select id="date" name="date">
-                <option value="date1">Date1</option>
-                <option value="date1">Date2</option>
-            </select>
+              <select id="fixFilter2" name="fixFilter2">
+                <option value="">-- All --</option>
+              </select>
             </div>
-            <input type="submit" value="Search" id="search-btn">
-            </div>
-            <div class="button">
-                <input type="button" value="Add Extra Expense" id="Add-btn" onclick="location.href='newExtraExp.html'">
-            </div>
+            <input type="submit" value="Search" id="fixSearchBtn">
+          </div>
+
+          <div class="button">
+            <input type="button" value="Add New Expense" id="Add-btn" onclick="location.href='newExpense.html'">
+            <input type="button" id="Log-btn" value="Log Payment" onclick="location.href='logPayment.html'">
+          </div>
+        </div>
       </div>
+
+      <!-- Gastos variables -->
+      <div id="varView" class="tab-view" style="display: none;">
+        <div class="table-wrap">
+          <table class="supp-table">
+            <div class="tabs">
+              <input type="button" value="Fixed Expenses" id="fixExpSelect" onclick="switchTab('fix')">
+              <input type="button" value="Variable Expenses" id="varExpSelect">
+            </div>
+            <thead>
+              <tr>
+                <th>Expense</th>
+                <th>Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <div class="menu-list">
+            <label for="varFilter1">Expense:</label></br>
+            <div class="split-select">
+              <select id="varFilter1" name="varFilter1">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+            <label for="varFilter2">Date:</label></br>
+            <div class="split-select">
+              <select id="varFilter2" name="varFilter2">
+                <option value="">-- All --</option>
+              </select>
+            </div>
+            <input type="submit" value="Search" id="varSearchBtn">
+          </div>
+
+          <div class="button">
+            <input type="button" value="Add Extra Expense" id="Add-btn" onclick="location.href='newExtraExp.html'">
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <script src="js/config.js"></script>
-    <script src="js/income.js"></script>
-
+  <script src="js/expenses.js"></script>
 </body>
 </html>
-

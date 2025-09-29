@@ -14,7 +14,7 @@
   <!-- Confirm Modal -->
   <div id="confirmModal" class="modal">
     <div class="modal-content">
-      <p>¿Deseas agregar este ingreso?</p>
+      <p id="confirmText">¿Deseas agregar este ingreso?</p>
       <button id="confirmChangesBtn">Confirmar</button>
       <button id="cancelChangesBtn">Cancelar</button>
     </div>
@@ -23,7 +23,7 @@
   <!-- Success Modal -->
   <div id="successModal" class="modal">
     <div class="modal-content">
-      <p>¡El ingreso se guardó correctamente!</p>
+      <p id="successText">¡El ingreso se guardó correctamente!</p>
       <button id="successOkBtn">Aceptar</button>
     </div>
   </div>
@@ -90,6 +90,7 @@
       <div class="button">
         <input type="submit" id="add-btn" value="Agregar Ingreso">
         <input type="button" id="cancel-btn" value="Cancelar" onclick="location.href='income.html'">
+        <input type="button" id="delete-btn" value="Eliminar" style="display:none; background:#d9534f; color:white;">
       </div>
     </div>
   </div>
