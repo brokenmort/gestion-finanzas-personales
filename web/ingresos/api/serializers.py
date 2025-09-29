@@ -14,8 +14,7 @@ class IngresosExtraSerializer(serializers.ModelSerializer):
         fields = '__all__'  # Serializa todos los campos del modelo
 
 class IngresoPagoSerializer(serializers.ModelSerializer):
-    ingreso_fijo = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = IngresoPago
-        fields = '__all__'
-
+        fields = ['id', 'ingreso_fijo', 'date', 'amount']
+        read_only_fields = ['id', 'ingreso_fijo']

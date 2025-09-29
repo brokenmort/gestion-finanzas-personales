@@ -78,10 +78,10 @@ class IngresosExtraApiViewSet(ModelViewSet):
 
 class IngresosFijosApiViewSet(ModelViewSet):
     ...
-    # Nuevo endpoint para pagos
     @action(detail=True, methods=['get', 'post'], url_path='pagos')
     def pagos(self, request, pk=None):
         ingreso = self.get_object()
+        
         if request.method == 'GET':
             pagos = ingreso.pagos.all().order_by('-date')
             serializer = IngresoPagoSerializer(pagos, many=True)
