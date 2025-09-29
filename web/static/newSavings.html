@@ -52,23 +52,43 @@
         <form>
           <div class="savings-details">
             <div class="group">
-              <label for="savingsType">Tipo de ahorro:</label>
+              <label for="reason">Razón:</label>
               <div class="info-box">
-                <input type="text" id="savingsType" name="savingsType" required>
+                <input type="text" id="reason" name="reason" required>
+              </div>
+            </div>
+            <div class="group">
+              <label for="targetAmount">Meta:</label>
+              <div class="info-box">
+                <input type="number" id="targetAmount" name="targetAmount" required>
               </div>
             </div>
 
             <div class="group">
-              <label for="description">Descripción:</label>
+              <label for="installment">Cuota:</label>
               <div class="info-box">
-                <input type="text" id="description" name="description" required>
+                <input type="number" id="installment" name="installment" required>
               </div>
             </div>
 
-            <div class="group">
-              <label for="amount">Cantidad:</label>
+                <div class="group">
+              <label for="loan">Préstamo:</label>
+              <div class="checkbox">
+                <input type="checkbox" id="loan" name="loan" required>
+              </div>
+            </div>
+
+                <div class="group">
+              <label for="creationDate">Fecha de Creación:</label>
               <div class="info-box">
-                <input type="number" id="amount" name="amount" required>
+                <input type="date" id="creationDate" name="creationDate" required>
+              </div>
+            </div>
+
+                <div class="group">
+              <label for="targetDate">Fecha Objetivo:</label>
+              <div class="info-box">
+                <input type="date" id="targetDate" name="targetDate" required>
               </div>
             </div>
 
@@ -83,6 +103,21 @@
                 </select>
               </div>
             </div>
+
+            <div class="group">
+              <label for="amountSaved">Acumulado:</label>
+              <div class="info-box">
+                <input type="number" id="amountSaved" name="amountSaved" required>
+              </div>
+            </div>
+
+            <div class="group">
+              <label for="remaining">Falta:</label>
+              <div class="info-box">
+                <input type="number" id="remaining" name="remaining" required>
+              </div>
+            </div>
+
           </div>
         </form>
       </div>
