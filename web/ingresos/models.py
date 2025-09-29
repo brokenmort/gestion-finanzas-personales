@@ -46,3 +46,21 @@ class IngresosExtra(models.Model):
     def get_absolute_url(self):
         # Optional: path-like string for UI context
         return f"/IngresosExtra/{self.name}/"
+    
+
+# Esto permitirá guardar múltiples pagos por cada ingreso fijo.
+class IngresoPago(models.Model):
+    ingreso_fijo = models.ForeignKey(
+        'IngresosFijos',
+        related_name='pagos',
+        on_delete=models.CASCADE
+    )
+    date = models.DateField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name_plural = "Pagos de Ingresos"
+
+    def __str__(self):
+        return f"Pago {self.amount} el {self.date} para {self.ingreso_fijo.name}"
+    

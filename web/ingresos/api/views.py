@@ -6,6 +6,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from ingresos.models import IngresosFijos, IngresosExtra  # ORM models
 from ingresos.api.serializers import IngresosFijosSerializer, IngresosExtraSerializer  # Serializers
+from rest_framework.decorators import action
+
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(tags=['Ingresos'], operation_summary='Listar ingresos fijos', responses={200: IngresosFijosSerializer(many=True)}))
@@ -73,3 +75,21 @@ class IngresosExtraApiViewSet(ModelViewSet):
    def perform_create(self, serializer):
        # Set logged-in user as owner on create
        serializer.save(owner=self.request.user)
+
+class IngresosFijosApiViewSet(ModelViewSet):
+    ...
+    # Nuevo endpoint para pagos
+    @action(detail=True, methods=['get', 'post'], url_path='pagos')
+    def pagos(self, request, pk=None):
+        ingreso = self.get_object()
+        if request.method == 'GET':
+            pagos = ingreso.pagos.all().order_by('-date')
+            serializer = IngresoPagoSerializer(pagos, many=True)
+            return Response(serializer.data)
+
+        if request.method == 'POST':
+            serializer = IngresoPagoSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(ingreso_fijo=ingreso)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
