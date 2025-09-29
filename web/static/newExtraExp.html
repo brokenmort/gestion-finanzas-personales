@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<!-- Confirm Changes Modal -->
+<!-- Confirm Modal -->
 <div id="confirmModal" class="modal">
   <div class="modal-content">
     <p id="confirmText">Do you want to add extra expense?</p>
@@ -24,7 +24,7 @@
 <!-- Success Modal -->
 <div id="successModal" class="modal">
   <div class="modal-content">
-    <p id="successText">The update was saved successfully!</p>
+    <p id="successText">The extra expense was saved successfully!</p>
     <button id="successOkBtn">Confirm</button>
   </div>
 </div>
@@ -34,10 +34,9 @@
   <a href="home.html" class="home-icon"><i class="bi bi-house-fill"></i></a>
 </div>
 
-<!-- Contenedor principal -->
 <div class="contenedor-padre">
   <div class="contenedor">
-    <div class="username" dir="auto">
+    <div class="username">
       <div class="profile-image-preview" id="baseProfileImagePreview">
         <i class="bi bi-person" id="baseProfileIcon"></i>
         <img id="baseProfileImage" alt="Profile image" loading="eager" decoding="async">
@@ -55,6 +54,13 @@
             <label for="expenseType">Expense Type:</label>
             <div class="info-box">
               <input type="text" id="expenseType" name="expenseType" required>
+            </div>
+          </div>
+
+          <div class="group">
+            <label for="description">Description:</label>
+            <div class="info-box">
+              <input type="text" id="description" name="description" required>
             </div>
           </div>
 

@@ -6,6 +6,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
+  const nameEl = document.getElementById('displayName');
+  const iconEl = document.getElementById('baseProfileIcon');
+  const imgEl  = document.getElementById('baseProfileImage');
+
+  const resolveImageUrl = (raw) => {
+    if (!raw) return null;
+    const s = String(raw).trim();
+    if (!s) return null;
+    if (/^https?:\/\//i.test(s)) return s;
+    const path = s.startsWith('/') ? s : `/${s}`;
+    return `${API_BASE}${path}`;
+  };
+
+  // Cargar usuario
+  (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/me/`, {
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      });
+      if (!res.ok) throw new Error('No autorizado');
+      const data = await res.json();
+      if (nameEl) nameEl.textContent = data.first_name || data.email || 'Usuario';
+      const url = resolveImageUrl(data && data.profile_image);
+      if (url && imgEl && iconEl) {
+        imgEl.onload = () => { imgEl.style.display = 'block'; iconEl.style.display = 'none'; };
+        imgEl.onerror = () => { imgEl.style.display = 'none'; iconEl.style.display = 'block'; };
+        imgEl.src = url + (url.includes('?') ? `&t=${Date.now()}` : `?t=${Date.now()}`);
+      }
+    } catch { window.location.href = 'index.html'; }
+  })();
+
   const addBtn = document.getElementById('add-btn');
   const deleteBtn = document.getElementById('delete-btn');
   const confirmModal = document.getElementById('confirmModal');
@@ -20,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
   if (!id) dateInput.value = today;
 
-  // Si estamos editando
   if (id) {
     addBtn.value = "Save Changes";
     confirmText.textContent = "Do you want to update this extra expense?";
@@ -32,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res.ok) {
         const data = await res.json();
         document.getElementById("expenseType").value = data.name || "";
+        document.getElementById("description").value = data.reason || "";
         document.getElementById("amount").value = data.quantity || "";
         document.getElementById("date").value = data.date || today;
       }
@@ -55,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmChangesBtn.onclick = async () => {
     const payload = {
       name: document.getElementById("expenseType").value,
+      reason: document.getElementById("description").value,
       quantity: String(document.getElementById("amount").value),
       date: document.getElementById("date").value
     };
