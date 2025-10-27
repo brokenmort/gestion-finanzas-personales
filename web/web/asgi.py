@@ -12,6 +12,6 @@ if str(WEB_ROOT) not in sys.path:
     sys.path.insert(0, str(WEB_ROOT))
 
 # settings vive en /repo/web/web/settings.py => 'web.settings'
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.web.settings')
 
 application = get_asgi_application()

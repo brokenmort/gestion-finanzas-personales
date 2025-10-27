@@ -8,11 +8,11 @@ services:
       pip install -r requirements.txt
       python web/manage.py collectstatic --noinput
       python web/manage.py migrate --noinput
-    startCommand: gunicorn web.wsgi
+    startCommand: gunicorn web.web.wsgi
     healthCheckPath: /admin/login/
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: web.settings
+        value: web.web.settings
       - key: DEBUG
         value: "False"
       - key: SECRET_KEY
