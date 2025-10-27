@@ -5,7 +5,6 @@ import sys
 from pathlib import Path
 
 # === FIX PARA RENDER ===
-# Forzamos el path absoluto del proyecto raíz
 CURRENT_DIR = Path(__file__).resolve().parent  # /repo/web
 PROJECT_DIR = CURRENT_DIR / "web"              # /repo/web/web
 if str(CURRENT_DIR) not in sys.path:

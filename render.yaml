@@ -9,11 +9,11 @@ services:
       cd web
       python manage.py collectstatic --noinput
       python manage.py migrate --noinput
-    startCommand: cd web && gunicorn web.web.wsgi:application
+    startCommand: cd web && gunicorn web.wsgi
     healthCheckPath: /admin/login/
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: web.web.settings
+        value: web.settings
       - key: DEBUG
         value: "False"
       - key: SECRET_KEY
