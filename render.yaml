@@ -6,9 +6,10 @@ services:
     autoDeploy: true
     buildCommand: |
       pip install -r requirements.txt
-      python web/manage.py collectstatic --noinput
-      python web/manage.py migrate --noinput
-    startCommand: gunicorn web.wsgi
+      cd web
+      python manage.py collectstatic --noinput
+      python manage.py migrate --noinput
+    startCommand: cd web && gunicorn web.wsgi
     healthCheckPath: /admin/login/
     envVars:
       - key: DJANGO_SETTINGS_MODULE
@@ -18,7 +19,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: "django-api-05y3.onrender.com"  # o tu dominio propio si ya lo conectaste
+        value: "django-api-05y3.onrender.com"
       - key: FRONTEND_ORIGINS
         value: "https://tu-front.pages.dev"
       - key: DATABASE_URL
