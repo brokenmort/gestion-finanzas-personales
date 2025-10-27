@@ -1,14 +1,18 @@
+"""
+WSGI config for web project.
+"""
+
 import os
 import sys
 from pathlib import Path
+from django.core.wsgi import get_wsgi_application
 
-# AÑADIR la raíz del repo al PYTHONPATH
-# Este archivo está en .../web/web/wsgi.py -> subimos 3 niveles hasta la raíz
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-if str(BASE_DIR) not in sys.path:
-    sys.path.insert(0, str(BASE_DIR))
+# Este archivo está en .../web/web/wsgi.py
+# Raíz del repo = 2 niveles arriba
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.web.settings')
 
-from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()

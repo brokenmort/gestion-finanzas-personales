@@ -9,13 +9,13 @@ import sys
 from pathlib import Path
 from django.core.asgi import get_asgi_application
 
-# Añade la raíz del repo al PYTHONPATH para que se encuentren apps como 'users'
-# Este archivo está en .../web/web/asgi.py  -> subimos 3 niveles hasta la raíz del repo
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-if str(BASE_DIR) not in sys.path:
-    sys.path.insert(0, str(BASE_DIR))
+# Añadir la raíz del repo al PYTHONPATH
+# Este archivo está en .../web/web/asgi.py → subimos 2 niveles hasta la raíz del repo
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
-# Ajusta a tu módulo de settings real
+# Configuración del módulo de settings correcto
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.web.settings')
 
 application = get_asgi_application()
