@@ -12,6 +12,6 @@ WEB_ROOT = Path(__file__).resolve().parents[1]  # .../repo/web
 if str(WEB_ROOT) not in sys.path:
     sys.path.insert(0, str(WEB_ROOT))
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.web.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.settings')
 
 application = get_wsgi_application()
