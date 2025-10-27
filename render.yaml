@@ -4,31 +4,25 @@ services:
     env: python
     plan: free
     autoDeploy: true
-    # (Render toma la versión de Python de .python-version -> 3.12.3)
     buildCommand: |
       pip install -r requirements.txt
       python web/manage.py collectstatic --noinput
       python web/manage.py migrate --noinput
-    startCommand: gunicorn web.web.wsgi
+    startCommand: gunicorn web.wsgi
     healthCheckPath: /admin/login/
     envVars:
-      # Django apunta a tu módulo settings dentro de web/web/
       - key: DJANGO_SETTINGS_MODULE
-        value: web.web.settings
-      # Mantén DEBUG desactivado en producción
+        value: web.settings
       - key: DEBUG
         value: "False"
-      # Render generará una SECRET_KEY segura
       - key: SECRET_KEY
         generateValue: true
-      # Pon aquí el dominio real cuando Render te lo muestre (sin https://)
-      # Ej: django-api-05yv3.onrender.com
       - key: ALLOWED_HOSTS
-        value: "REEMPLAZA_POR_TU_DOMINIO.onrender.com"
-      # Dominios de tu front (Cloudflare Pages / tu dominio). Coma-separados, con https://
+        # reemplaza por el dominio real que te muestre Render (sin https://)
+        value: "TU-DOMINIO.onrender.com"
       - key: FRONTEND_ORIGINS
+        # agrega luego tu front real (Cloudflare Pages / dominio propio)
         value: "https://tu-front.pages.dev"
-      # Conecta automáticamente la DB creada abajo
       - key: DATABASE_URL
         fromDatabase:
           name: postgres
