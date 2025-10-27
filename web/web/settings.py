@@ -14,26 +14,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ======================================================
 
 SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY",
-    "django-insecure-^j2&dyz6s@hy%b99mn9h@x59ebw%517mflsr^jne%n+ysql@&d"
+    "SECRET_KEY",  # usa SECRET_KEY estándar en Render
+    "django-insecure-dev-only"
 )
-DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = [
-    "pagina-web-finansas-b6474cfcee14.herokuapp.com",
-    "pagina-web-finansas.herokuapp.com",
-    "gestion-finanzas-personales.herokuapp.com",
-    ".herokuapp.com",
-    "127.0.0.1",
-    "localhost",
-    "testserver",
-]
-
-_heroku_app = os.environ.get('HEROKU_APP_NAME')
-if _heroku_app:
-    _host = f"{_heroku_app}.herokuapp.com"
-    if _host not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(_host)
+# ALLOWED_HOSTS:
+# - Siempre permitimos localhost para desarrollo
+# - Añadimos Render automáticamente (si lo deseas). Mejor controla por ENV.
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+# Permite añadir múltiples hosts separados por comas desde ENV:
+#   ALLOWED_HOSTS=api-miapp.onrender.com,mi-dominio.com
+_env_allowed = os.environ.get("ALLOWED_HOSTS")
+if _env_allowed:
+    ALLOWED_HOSTS += [h.strip() for h in _env_allowed.split(",") if h.strip()]
 
 # ======================================================
 # APLICACIONES INSTALADAS
@@ -108,10 +102,12 @@ WSGI_APPLICATION = 'web.wsgi.application'
 # BASE DE DATOS
 # ======================================================
 
+# Render inyecta DATABASE_URL al enlazar Postgres. Si no existe, usa sqlite.
 DATABASES = {
-    'default': dj_database_url.parse(
-        os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
+        ssl_require=True  # en Postgres gestionado conviene exigir SSL
     )
 }
 
@@ -157,10 +153,18 @@ SIMPLE_JWT = {
 }
 
 # ======================================================
-# CORS
+# CORS / CSRF (controlados por ENV para no tocar código)
 # ======================================================
 
-# CORS_ALLOWED_ORIGINS = []
+# FRONTEND_ORIGINS="https://mi-front.pages.dev,https://mi-dominio.com"
+_frontends = [o.strip() for o in os.environ.get("FRONTEND_ORIGINS", "").split(",") if o.strip()]
+
+CORS_ALLOWED_ORIGINS = _frontends
+CORS_ALLOW_CREDENTIALS = True  # por si usas cookies; si solo usas JWT no afecta
+
+# CSRF_TRUSTED_ORIGINS requiere esquema (https://)
+# CSRF_TRUSTED_ORIGINS="https://mi-front.pages.dev,https://mi-dominio.com"
+CSRF_TRUSTED_ORIGINS = _frontends
 
 # ======================================================
 # ARCHIVOS ESTÁTICOS
@@ -168,10 +172,21 @@ SIMPLE_JWT = {
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / "static"]
+# En producción: archivos comprimidos + nombres con hash para cacheo
+if not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+WHITENOISE_USE_FINDERS = True
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# ======================================================
+# MEDIA
+# ======================================================
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+# En contenedores efímeros, puedes redirigir a /tmp si no usas CLOUDINARY
+if not DEBUG and not os.environ.get('CLOUDINARY_URL'):
+    MEDIA_ROOT = Path('/tmp') / 'media'
 
 # ======================================================
 # USER MODEL PERSONALIZADO
@@ -180,21 +195,18 @@ STATICFILES_DIRS = [
 AUTH_USER_MODEL = 'users.User'
 
 # ======================================================
-# EMAIL
+# EMAIL (sin referencias a Heroku)
 # ======================================================
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', "587"))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', "True") == "True"
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or "no-reply@localhost")
 
-DEFAULT_FROM_EMAIL = os.environ.get(
-    'DEFAULT_FROM_EMAIL',
-    EMAIL_HOST_USER or f"no-reply@{os.environ.get('HEROKU_APP_NAME', 'localhost')}.herokuapp.com"
-)
-
+# Soporte SendGrid si proporcionas la API key
 if os.environ.get('SENDGRID_API_KEY'):
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_HOST_USER = 'apikey'
@@ -202,22 +214,6 @@ if os.environ.get('SENDGRID_API_KEY'):
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', DEFAULT_FROM_EMAIL)
-
-# ======================================================
-# PK por defecto
-# ======================================================
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# ======================================================
-# MEDIA
-# ======================================================
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-if not DEBUG and not os.environ.get('CLOUDINARY_URL'):
-    MEDIA_ROOT = Path('/tmp') / 'media'
 
 # ======================================================
 # SWAGGER
@@ -236,30 +232,13 @@ SWAGGER_SETTINGS = {
 }
 
 # ======================================================
-# STATICFILES STORAGE
+# PROXY/HTTPS
 # ======================================================
-
-if not DEBUG:
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
-
-WHITENOISE_USE_FINDERS = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://pagina-web-finansas.herokuapp.com',
-    'https://pagina-web-finansas-b6474cfcee14.herokuapp.com',
-    'https://gestion-finanzas-personales.herokuapp.com',
-    'https://*.herokuapp.com',
-]
-
-if _heroku_app:
-    _origin = f"https://{_heroku_app}.herokuapp.com"
-    if _origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(_origin)
-
 # ======================================================
-# CLOUDINARY (solo si está configurado)
+# CLOUDINARY (opcional)
 # ======================================================
 
 _cloudinary_url = os.environ.get("CLOUDINARY_URL")
