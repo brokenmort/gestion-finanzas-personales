@@ -6,23 +6,23 @@ services:
     autoDeploy: true
     buildCommand: |
       pip install -r requirements.txt
-      python web/manage.py collectstatic --noinput
-      python web/manage.py migrate --noinput
-    startCommand: gunicorn web.web.wsgi
+      python -m web.manage collectstatic --noinput
+      python -m web.manage migrate --noinput
+    startCommand: gunicorn web.web.wsgi:application
     healthCheckPath: /admin/login/
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: web.web.settings
+      - key: PYTHONPATH
+        value: .
       - key: DEBUG
         value: "False"
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        # reemplaza por el dominio real que te muestre Render (sin https://)
-        value: "TU-DOMINIO.onrender.com"
+        value: "TU-DOMINIO.onrender.com"   # cámbialo al dominio real que te muestre Render (sin https://)
       - key: FRONTEND_ORIGINS
-        # agrega luego tu front real (Cloudflare Pages / dominio propio)
-        value: "https://tu-front.pages.dev"
+        value: "https://tu-front.pages.dev"  # reemplázalo por tu front real
       - key: DATABASE_URL
         fromDatabase:
           name: postgres
