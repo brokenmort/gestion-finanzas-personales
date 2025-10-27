@@ -168,14 +168,22 @@ CSRF_TRUSTED_ORIGINS = _frontends
 
 # ======================================================
 # ARCHIVOS ESTÁTICOS
+#  (sin carpeta 'static/' local: no fallará collectstatic)
 # ======================================================
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Solo agrega la carpeta "static" si existe
+STATICFILES_DIRS = []
+_static_dir = BASE_DIR / "static"
+if _static_dir.exists():
+    STATICFILES_DIRS.append(_static_dir)
+
 # En producción: archivos comprimidos + nombres con hash para cacheo
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 WHITENOISE_USE_FINDERS = True
 
 # ======================================================
@@ -226,7 +234,7 @@ SWAGGER_SETTINGS = {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header',
-            'description': 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer <token>"',
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer <token)"',
         }
     },
 }
