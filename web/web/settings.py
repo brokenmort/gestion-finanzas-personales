@@ -79,7 +79,7 @@ MIDDLEWARE = [
 # URLS Y TEMPLATES
 # ======================================================
 
-ROOT_URLCONF = 'web.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -96,7 +96,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'web.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 # ======================================================
 # BASE DE DATOS
