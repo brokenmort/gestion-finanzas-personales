@@ -1,0 +1,15 @@
+Django>=4.2,<6
+gunicorn>=21
+whitenoise>=6
+psycopg2-binary>=2.9
+dj-database-url>=2
+django-cors-headers>=4
+djangorestframework>=3.14
+djangorestframework-simplejwt>=5.3
+drf-spectacular>=0.27
+drf-spectacular-sidecar>=2024.7.1
+drf-yasg>=1.21
+django-filter>=24.3
+python-dotenv>=1.0
+cloudinary>=1.36
+django-cloudinary-storage>=0.3
