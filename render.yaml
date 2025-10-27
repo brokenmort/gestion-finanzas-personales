@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: django-api
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: |
+      pip install -r requirements.txt
+      python web/manage.py collectstatic --noinput
+      python web/manage.py migrate --noinput
+    startCommand: gunicorn web.web.wsgi
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_SETTINGS_MODULE
+        value: web.web.settings
+      - key: ALLOWED_HOSTS
+        value: "tu-api.onrender.com"  # cámbialo luego por el dominio real de Render
+      - key: FRONTEND_ORIGINS
+        value: "https://tu-front.pages.dev,https://tu-dominio.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postgres
+          property: connectionString
+    autoDeploy: true
+    healthCheckPath: /admin/login/
+
+databases:
+  - name: postgres
+    plan: free
