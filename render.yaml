@@ -8,20 +8,19 @@ services:
       pip install -r requirements.txt
       python web/manage.py collectstatic --noinput
       python web/manage.py migrate --noinput
-    startCommand: gunicorn web.web.wsgi
+    startCommand: gunicorn web.wsgi
     healthCheckPath: /admin/login/
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: web.web.settings
+        value: web.settings
       - key: DEBUG
         value: "False"
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: "django-api-05y3.onrender.com"
+        value: "django-api-05y3.onrender.com"  # o tu dominio propio si ya lo conectaste
       - key: FRONTEND_ORIGINS
-        # Por ahora incluimos el propio dominio para CSRF/CORS. Si luego tienes un frontend aparte, añádelo aquí separado por coma.
-        value: "https://django-api-05y3.onrender.com"
+        value: "https://tu-front.pages.dev"
       - key: DATABASE_URL
         fromDatabase:
           name: postgres

@@ -4,14 +4,16 @@ import os
 import sys
 from pathlib import Path
 
-# === AÑADIDO: asegurar que el repo root está en sys.path ===
-BASE_DIR = Path(__file__).resolve().parent.parent  # /<repo>/ (no /<repo>/web)
-if str(BASE_DIR) not in sys.path:
-    sys.path.insert(0, str(BASE_DIR))
+# === AÑADIDO: hacer que el paquete de proyecto sea el interno "web/web" importable como "web" ===
+# /repo/web  (carpeta que contiene el paquete de proyecto "web" con settings.py, urls.py, etc.)
+PROJECT_DIR = Path(__file__).resolve().parent  # /repo/web
+if str(PROJECT_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECT_DIR))
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.web.settings')
+    # ahora importamos el settings del paquete interno como "web.settings"
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web.settings')
     from django.core.management import execute_from_command_line
     execute_from_command_line(sys.argv)
 
