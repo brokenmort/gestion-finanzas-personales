@@ -19,12 +19,8 @@ SECRET_KEY = os.environ.get(
 )
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-# ALLOWED_HOSTS:
-# - Siempre permitimos localhost para desarrollo
-# - Añadimos Render automáticamente (si lo deseas). Mejor controla por ENV.
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-# Permite añadir múltiples hosts separados por comas desde ENV:
-#   ALLOWED_HOSTS=api-miapp.onrender.com,mi-dominio.com
+# ALLOWED_HOSTS
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django-api-05y3.onrender.com"]
 _env_allowed = os.environ.get("ALLOWED_HOSTS")
 if _env_allowed:
     ALLOWED_HOSTS += [h.strip() for h in _env_allowed.split(",") if h.strip()]
@@ -152,19 +148,19 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
-# ======================================================
-# CORS / CSRF (controlados por ENV para no tocar código)
-# ======================================================
-
-# FRONTEND_ORIGINS="https://mi-front.pages.dev,https://mi-dominio.com"
-_frontends = [o.strip() for o in os.environ.get("FRONTEND_ORIGINS", "").split(",") if o.strip()]
+# CORS / CSRF
+# FRONTEND_ORIGINS puede traer varios orígenes separados por coma. Por defecto dejamos el propio dominio de Render.
+_frontends = [o.strip() for o in os.environ.get(
+    "FRONTEND_ORIGINS",
+    "https://django-api-05y3.onrender.com"
+).split(",") if o.strip()]
 
 CORS_ALLOWED_ORIGINS = _frontends
-CORS_ALLOW_CREDENTIALS = True  # por si usas cookies; si solo usas JWT no afecta
+CORS_ALLOW_CREDENTIALS = True
 
-# CSRF_TRUSTED_ORIGINS requiere esquema (https://)
-# CSRF_TRUSTED_ORIGINS="https://mi-front.pages.dev,https://mi-dominio.com"
-CSRF_TRUSTED_ORIGINS = _frontends
+# CSRF requiere esquema (https://). Incluimos también el dominio de Render por defecto.
+CSRF_TRUSTED_ORIGINS = list({* _frontends, "https://django-api-05y3.onrender.com"})
+
 
 # ======================================================
 # ARCHIVOS ESTÁTICOS
