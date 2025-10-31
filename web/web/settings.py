@@ -13,10 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # CLAVES Y DEBUG
 # ======================================================
 
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY",  # usa SECRET_KEY estándar en Render
-    "django-insecure-dev-only"
-)
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev-only")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # ALLOWED_HOSTS
@@ -63,8 +60,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    # CORS debe ir lo más alto posible, antes de CommonMiddleware
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -93,19 +93,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'web.wsgi.application'
-
 ASGI_APPLICATION = 'web.asgi.application'
 
 # ======================================================
 # BASE DE DATOS
 # ======================================================
 
-# Render inyecta DATABASE_URL al enlazar Postgres. Si no existe, usa sqlite.
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
-        ssl_require=True  # en Postgres gestionado conviene exigir SSL
+        ssl_require=True
     )
 }
 
@@ -150,35 +148,72 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
+# ======================================================
 # CORS / CSRF
-# FRONTEND_ORIGINS puede traer varios orígenes separados por coma. Por defecto dejamos el propio dominio de Render.
-_frontends = [o.strip() for o in os.environ.get(
-    "FRONTEND_ORIGINS",
-    "https://django-api-05y3.onrender.com"
-).split(",") if o.strip()]
+# ======================================================
+# FRONTEND_ORIGINS: lista separada por comas con los orígenes del front.
+#   ejemplo: https://tu-sitio.pages.dev,https://www.tudominio.com
+_frontends_env = [o.strip() for o in os.environ.get("FRONTEND_ORIGINS", "").split(",") if o.strip()]
 
-CORS_ALLOWED_ORIGINS = _frontends
+# Fallbacks seguros para desarrollo y Cloudflare Pages si no defines la env var:
+_fallback_fronts = [
+    "https://django-api-05y3.onrender.com",  # rara vez se usa, pero no estorba
+    "https://*.pages.dev",                    # Cloudflare Pages (wildcard permitido)
+    "http://localhost:5500",                  # Live Server
+    "http://127.0.0.1:5500",
+]
+
+# Permitir TODO (solo para diagnóstico) si se define explícitamente:
+CORS_ALLOW_ALL_ORIGINS = os.environ.get("CORS_ALLOW_ALL_ORIGINS", "False") == "True"
+
+if not CORS_ALLOW_ALL_ORIGINS:
+    # Si no hay FRONTEND_ORIGINS, usa fallbacks
+    CORS_ALLOWED_ORIGINS = [o for o in _frontends_env if "//*" not in o]  # quita posibles wildcards
+    CORS_ALLOWED_ORIGIN_REGEXES = []
+
+    # Soporte para wildcards tipo https://*.pages.dev usando regex
+    # (Django-cors-headers soporta ORIGINS y ORIGIN_REGEXES)
+    # Pasamos *.pages.dev como regex:
+    wildcards = [o for o in (_frontends_env or _fallback_fronts) if "*." in o]
+    for w in wildcards:
+        # 'https://*.pages.dev' -> r"^https://([a-zA-Z0-9-]+\.)*pages\.dev$"
+        scheme, host = w.split("://", 1)
+        pattern = rf"^{scheme}://([a-zA-Z0-9-]+\.)*{host.replace('*.', '').replace('.', r'\.')}$"
+        CORS_ALLOWED_ORIGIN_REGEXES.append(pattern)
+
+    # Si no definiste FRONTEND_ORIGINS, añade también orígenes explícitos del fallback sin wildcard
+    if not _frontends_env:
+        CORS_ALLOWED_ORIGINS += [o for o in _fallback_fronts if "*." not in o]
+
+# Headers y métodos (explícitos para JWT + multipart)
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 CORS_ALLOW_CREDENTIALS = True
 
-# CSRF requiere esquema (https://). Incluimos también el dominio de Render por defecto.
-CSRF_TRUSTED_ORIGINS = list({* _frontends, "https://django-api-05y3.onrender.com"})
-
+# CSRF: confía en los mismos orígenes del front. Soporta wildcards estilo *.pages.dev.
+CSRF_TRUSTED_ORIGINS = list({*(h for h in _frontends_env if h), "https://*.pages.dev", "https://django-api-05y3.onrender.com"})
 
 # ======================================================
 # ARCHIVOS ESTÁTICOS
-#  (sin carpeta 'static/' local: no fallará collectstatic)
 # ======================================================
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Solo agrega la carpeta "static" si existe
 STATICFILES_DIRS = []
 _static_dir = BASE_DIR / "static"
 if _static_dir.exists():
     STATICFILES_DIRS.append(_static_dir)
 
-# En producción: archivos comprimidos + nombres con hash para cacheo
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
@@ -190,7 +225,6 @@ WHITENOISE_USE_FINDERS = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-# En contenedores efímeros, puedes redirigir a /tmp si no usas CLOUDINARY
 if not DEBUG and not os.environ.get('CLOUDINARY_URL'):
     MEDIA_ROOT = Path('/tmp') / 'media'
 
@@ -201,7 +235,7 @@ if not DEBUG and not os.environ.get('CLOUDINARY_URL'):
 AUTH_USER_MODEL = 'users.User'
 
 # ======================================================
-# EMAIL (sin referencias a Heroku)
+# EMAIL
 # ======================================================
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -212,7 +246,6 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or "no-reply@localhost")
 
-# Soporte SendGrid si proporcionas la API key
 if os.environ.get('SENDGRID_API_KEY'):
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_HOST_USER = 'apikey'
@@ -232,7 +265,7 @@ SWAGGER_SETTINGS = {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header',
-            'description': 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer <token)"',
+            'description': 'JWT Authorization header: Bearer <token>',
         }
     },
 }
