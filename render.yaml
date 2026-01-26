@@ -24,9 +24,9 @@ services:
         value: "https://tu-front.pages.dev"
       - key: DATABASE_URL
         fromDatabase:
-          name: postgres
+          name: postgres-clean-2025-10-27   # <-- NUEVO nombre
           property: connectionString
 
 databases:
-  - name: postgres
+  - name: postgres-clean-2025-10-27        # <-- Igual al de arriba
     plan: free
