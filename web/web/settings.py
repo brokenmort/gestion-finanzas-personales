@@ -2,11 +2,16 @@ from pathlib import Path
 import os
 from datetime import timedelta
 
+# ======================================================
+# RUTAS Y CONFIGURACIÓN BÁSICA
+# ======================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ======================================================
 # CLAVES Y DEBUG (LOCAL)
 # ======================================================
+
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-dev-only")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
@@ -16,6 +21,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 # ======================================================
 # APLICACIONES INSTALADAS
 # ======================================================
+
 INSTALLED_APPS = [
     # Django apps
     "django.contrib.admin",
@@ -32,6 +38,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
 
+    # Si sigues usando drf_yasg en vistas, puedes dejarlo instalado.
+    # Pero en local no es necesario.
+    "drf_yasg",
+
     # Apps locales
     "users",
     "ingresos",
@@ -39,14 +49,15 @@ INSTALLED_APPS = [
     "ahorros",
     "prestamos",
 
-    # OJO: en urls.py importas reports.api.views, pero no veo 'reports' en INSTALLED_APPS.
-    # Si tienes app 'reports', descomenta:
+    # OJO: en urls.py importas reports.api.views.
+    # Si tienes app reports, descomenta:
     # "reports",
 ]
 
 # ======================================================
-# MIDDLEWARE (LOCAL)
+# MIDDLEWARE
 # ======================================================
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -60,6 +71,10 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# ======================================================
+# URLS Y TEMPLATES
+# ======================================================
 
 ROOT_URLCONF = "web.urls"
 
@@ -82,9 +97,9 @@ WSGI_APPLICATION = "web.wsgi.application"
 ASGI_APPLICATION = "web.asgi.application"
 
 # ======================================================
-# BASE DE DATOS (LOCAL)
+# BASE DE DATOS (LOCAL LIMPIA)
 # ======================================================
-# Por defecto SQLite (simple y perfecto para dev)
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -92,21 +107,10 @@ DATABASES = {
     }
 }
 
-# Si quieres Postgres local más adelante, cambia esto por env vars:
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.environ.get("POSTGRES_DB", "mi_db"),
-#         "USER": os.environ.get("POSTGRES_USER", "postgres"),
-#         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "postgres"),
-#         "HOST": os.environ.get("POSTGRES_HOST", "127.0.0.1"),
-#         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-#     }
-# }
-
 # ======================================================
 # VALIDACIÓN DE CONTRASEÑAS
 # ======================================================
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -117,14 +121,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # ======================================================
 # INTERNACIONALIZACIÓN
 # ======================================================
+
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
 # ======================================================
-# DRF + JWT
+# DJANGO REST FRAMEWORK + JWT
 # ======================================================
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -133,6 +139,12 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # ✅ Esto hace que todo el API acepte JSON por defecto
+    "DEFAULT_PARSER_CLASSES": (
+        "rest_framework.parsers.JSONParser",
+        "rest_framework.parsers.FormParser",
+        "rest_framework.parsers.MultiPartParser",
+    ),
 }
 
 SIMPLE_JWT = {
@@ -145,41 +157,61 @@ SIMPLE_JWT = {
 # ======================================================
 # CORS / CSRF (LOCAL)
 # ======================================================
-# Pon aquí el puerto real de tu front (Vite=5173, React=3000, etc.)
-FRONTEND_ORIGINS = os.environ.get("FRONTEND_ORIGINS", "http://localhost:5173,http://localhost:3000")
+
+# Cambia/añade los puertos que uses para tu front
+FRONTEND_ORIGINS = os.environ.get(
+    "FRONTEND_ORIGINS",
+    "http://localhost:5173,http://localhost:3000,"
+    "http://127.0.0.1:5173,http://127.0.0.1:3000,"
+    "http://localhost:5500,http://127.0.0.1:5500"
+)
+
 CORS_ALLOWED_ORIGINS = [o.strip() for o in FRONTEND_ORIGINS.split(",") if o.strip()]
 
-# Si usas JWT en headers, no necesitas credenciales/cookies normalmente.
-# Pero si en algún punto usas cookies, déjalo en True.
+# Para JWT por header, esto puede estar True o False; no afecta el preflight.
 CORS_ALLOW_CREDENTIALS = True
 
+# (Opcional) CSRF no aplica si solo usas JWT en Authorization, pero no estorba.
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
 ]
 
 # ======================================================
-# STATIC / MEDIA (LOCAL)
+# ARCHIVOS ESTÁTICOS (LOCAL)
 # ======================================================
+
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# ======================================================
+# MEDIA (LOCAL)
+# ======================================================
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # ======================================================
-# USER MODEL
+# USER MODEL PERSONALIZADO
 # ======================================================
+
 AUTH_USER_MODEL = "users.User"
 
 # ======================================================
-# EMAIL (LOCAL: consola para no depender de SMTP)
+# EMAIL (LOCAL: imprimir en consola)
 # ======================================================
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@localhost")
 
 # ======================================================
-# SWAGGER / DOCS
+# DOCS (drf-spectacular)
 # ======================================================
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "API Local",
     "DESCRIPTION": "Documentación local",
