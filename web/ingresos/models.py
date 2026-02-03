@@ -57,6 +57,9 @@ class IngresoPago(models.Model):
     )
     date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    novelty = models.IntegerField(default=0)  # Campo adicional para novedades
+    novelty_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Monto de la novedad
+    novelty_reason = models.TextField(default='')  # Razón de la novedad
 
     class Meta:
         verbose_name_plural = "Pagos de Ingresos"
