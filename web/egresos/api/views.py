@@ -4,8 +4,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from egresos.models import EgresosFijos, EgresosExtra
-from egresos.api.serializers import EgresosFijosSerializer, EgresosExtraSerializer
+from egresos.models import EgresosFijos, EgresosExtra, EgresoPago
+from egresos.api.serializers import (
+    EgresosFijosSerializer,
+    EgresosExtraSerializer,
+    EgresoPagoSerializer
+)
 
 @method_decorator(name='list', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Listar egresos fijos', responses={200: EgresosFijosSerializer(many=True)}))
 @method_decorator(name='create', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Crear egreso fijo', request_body=openapi.Schema(
@@ -23,7 +27,6 @@ from egresos.api.serializers import EgresosFijosSerializer, EgresosExtraSerializ
 @method_decorator(name='partial_update', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Actualizar parcialmente egreso fijo'))
 @method_decorator(name='destroy', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Eliminar egreso fijo'))
 class EgresosFijosApiViewSet(ModelViewSet):
-    # ViewSet for Egresos Fijos
     serializer_class = EgresosFijosSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
@@ -37,6 +40,7 @@ class EgresosFijosApiViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 @method_decorator(name='list', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Listar egresos extra', responses={200: EgresosExtraSerializer(many=True)}))
 @method_decorator(name='create', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Crear egreso extra', request_body=openapi.Schema(
@@ -54,7 +58,6 @@ class EgresosFijosApiViewSet(ModelViewSet):
 @method_decorator(name='partial_update', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Actualizar parcialmente egreso extra'))
 @method_decorator(name='destroy', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Eliminar egreso extra'))
 class EgresosExtraApiViewSet(ModelViewSet):
-    # ViewSet for Egresos Extra
     serializer_class = EgresosExtraSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
@@ -68,3 +71,30 @@ class EgresosExtraApiViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+
+# ----------------------------
+# PAGOS DE EGRESOS FIJOS
+# ----------------------------
+@method_decorator(name='list', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Listar pagos de egresos'))
+@method_decorator(name='create', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Crear pago de egreso'))
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Detalle de pago de egreso'))
+@method_decorator(name='update', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Actualizar pago de egreso'))
+@method_decorator(name='partial_update', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Actualizar parcialmente pago de egreso'))
+@method_decorator(name='destroy', decorator=swagger_auto_schema(tags=['Egresos'], operation_summary='Eliminar pago de egreso'))
+class EgresoPagoApiViewSet(ModelViewSet):
+    serializer_class = EgresoPagoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = getattr(self.request, 'user', None)
+        if not user or not user.is_authenticated:
+            return EgresoPago.objects.none()
+
+        return EgresoPago.objects.filter(
+            egreso_fijo__owner=user
+        ).order_by('-date', '-id')
+
+    def perform_create(self, serializer):
+        egreso_id = self.request.data.get("egreso_fijo")
+        serializer.save(egreso_fijo_id=egreso_id)

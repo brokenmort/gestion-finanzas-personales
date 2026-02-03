@@ -36,3 +36,24 @@ class EgresosExtra(models.Model):
 
     def get_absolute_url(self):
         return f"/EgresosExtra/{self.name}/"
+    
+# Esto permitirá guardar múltiples pagos por cada Egreso fijo.
+class EgresoPago(models.Model):
+    egreso_fijo = models.ForeignKey(
+        'EgresosFijos',
+        related_name='pagos',
+        on_delete=models.CASCADE
+    )
+    date = models.DateField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    novelty = models.IntegerField(default=0)  # Campo adicional para novedades
+    novelty_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Monto de la novedad
+    novelty_reason = models.TextField(default='')  # Razón de la novedad
+
+    class Meta:
+        verbose_name_plural = "Pagos de Egresos"
+
+    def __str__(self):
+        return f"Pago {self.amount} el {self.date} para {self.egreso_fijo.name}"
+    
+

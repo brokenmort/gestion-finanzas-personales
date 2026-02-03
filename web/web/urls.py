@@ -11,7 +11,7 @@ from drf_spectacular.views import (
 
 # Routers de las apps
 from ingresos.api.router import router_IngresosFijos, router_IngresosExtra
-from egresos.api.router import router_EgresosFijos, router_EgresosExtra
+from egresos.api.router import router_EgresosFijos, router_EgresosExtra, router_EgresoPago
 from ahorros.api.router import router_ahorros
 from prestamos.api.router import router_prestamos
 from reports.api.views import SummaryView, CashflowMonthlyView
@@ -26,6 +26,7 @@ urlpatterns = [
     path("api/", include(router_IngresosExtra.urls)),
     path("api/", include(router_EgresosFijos.urls)),
     path("api/", include(router_EgresosExtra.urls)),
+    path("api/", include(router_EgresoPago.urls)),
     path("api/", include(router_ahorros.urls)),
     path("api/", include(router_prestamos.urls)),
     path("api/reports/summary/", SummaryView.as_view(), name="reports-summary"),
