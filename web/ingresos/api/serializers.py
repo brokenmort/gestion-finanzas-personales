@@ -11,7 +11,7 @@ class IngresoPagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngresoPago
         # Campos expuestos al cliente
-        fields = ["id", "ingreso_fijo", "date", "amount"]
+        fields = ["id", "ingreso_fijo", "date", "amount", "novelty", "novelty_amount", "novelty_reason"]
         # ingreso_fijo lo dejamos solo lectura porque
         # lo asignamos automáticamente en la vista (no lo manda el cliente)
         read_only_fields = ["id", "ingreso_fijo"]
